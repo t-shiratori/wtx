@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"fmt"
+	"go-worktree-cli/internal/config"
+	"go-worktree-cli/internal/git"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -9,19 +10,34 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "wt",
-	Short: "git worktree helper CLI",
-	Long:  "wt is a small helper CLI for git worktree",
-}
-
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	Short: "A simple git worktree helper",
+	Long:  "wt is a small CLI tool to manage git worktrees easily.",
 }
 
 func init() {
-	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
-		ensureGitRepo()
+	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		repoRoot, err := git.RepoRoot()
+		if err != nil {
+			return err
+		}
+
+		if err := config.EnsureWTDir(repoRoot); err != nil {
+			return err
+		}
+
+		cfg, err := config.LoadConfig(repoRoot)
+		if err != nil {
+			return err
+		}
+
+		config.SetCurrent(cfg)
+		return nil
+	}
+}
+
+// Execute is called from main.go
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
 	}
 }

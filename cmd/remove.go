@@ -1,13 +1,17 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"go-worktree-cli/internal/git"
+
+	"github.com/spf13/cobra"
+)
 
 var removeCmd = &cobra.Command{
 	Use:   "remove <path>",
-	Short: "Remove a git worktree",
+	Short: "Remove git worktree",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return git("worktree", "remove", args[0])
+		return git.RemoveWorktree(args[0])
 	},
 }
 
