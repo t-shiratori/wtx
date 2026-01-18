@@ -37,8 +37,16 @@ func ListWorktrees() error {
 	return cmd.Run()
 }
 
-func RemoveWorktree(path string) error {
-	cmd := exec.Command("git", "worktree", "remove", path)
+func RemoveWorktree(path string, force bool) error {
+	args := []string{"worktree", "remove"}
+
+	if force {
+		args = append(args, "--force")
+	}
+
+	args = append(args, path)
+
+	cmd := exec.Command("git", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
