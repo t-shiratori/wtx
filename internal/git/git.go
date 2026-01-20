@@ -102,8 +102,6 @@ func BranchFromWorktree(path string) (string, error) {
 	var currentPath string
 	for _, line := range lines {
 
-		fmt.Println("line:", line)
-
 		if rest, ok := strings.CutPrefix(line, "worktree "); ok {
 			currentPath = rest
 		}
@@ -111,7 +109,6 @@ func BranchFromWorktree(path string) (string, error) {
 		if currentPath == path {
 			if rest, ok := strings.CutPrefix(line, "branch "); ok {
 				branch := strings.TrimPrefix(rest, "refs/heads/")
-				fmt.Println("branch:", branch)
 				return branch, nil
 			}
 		}
