@@ -5,6 +5,7 @@ import (
 	"go-worktree-cli/internal/fs"
 	"go-worktree-cli/internal/git"
 	"go-worktree-cli/internal/hook"
+	"go-worktree-cli/internal/ui"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -15,6 +16,7 @@ var addCmd = &cobra.Command{
 	Short: "add git worktree",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
 		branch := args[0]
 
 		// 1. git repo root
@@ -46,6 +48,8 @@ var addCmd = &cobra.Command{
 		if err := git.AddWorktree(worktreeDir, branch); err != nil {
 			return err
 		}
+
+		ui.Success("Added worktree '%s'", worktreeDir)
 
 		// 6. post create hook
 		if err := hook.Run(cfg.Hooks.PostCreate, worktreeDir); err != nil {

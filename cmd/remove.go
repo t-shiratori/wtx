@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"go-worktree-cli/internal/git"
+	"go-worktree-cli/internal/ui"
 
 	"github.com/spf13/cobra"
 )
@@ -32,8 +33,6 @@ var removeCmd = &cobra.Command{
 				return err
 			}
 
-			fmt.Println("Removing worktree at path:", path)
-
 			var branch string
 
 			// 先に worktree に対応するブランチ名を取得
@@ -51,12 +50,16 @@ var removeCmd = &cobra.Command{
 				return err
 			}
 
+			ui.Success("Removed worktree '%s'", path)
+
 			// 対応するブランチも削除
 			if removeBranch {
 				if err := git.DeleteBranch(branch, force); err != nil {
 					return err
 				}
 			}
+
+			ui.Success("Deleted branch '%s'", branch)
 		}
 		return nil
 	},
