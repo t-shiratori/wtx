@@ -16,7 +16,7 @@ type CopyConfig struct {
 }
 
 type HookConfig struct {
-	PreCreate  string `toml:"pre_create"`
-	PostCreate string `toml:"post_create"`
-	PostCopy   string `toml:"post_copy"`
+	PreCreate  []string `toml:"pre_create"`
+	PostCreate []string `toml:"post_create"`
+	PostCopy   []string `toml:"post_copy"`
 }

@@ -11,17 +11,17 @@ const (
 )
 
 func Info(msg string, args ...any) {
-	fmt.Println(colorBlue + "ℹ " + fmt.Sprintf(msg, args...) + colorReset)
+	fmt.Println(colorBlue + "[Info] " + fmt.Sprintf(msg, args...) + colorReset)
 }
 
 func Success(msg string, args ...any) {
-	fmt.Println(colorGreen + "✔ " + fmt.Sprintf(msg, args...) + colorReset)
+	fmt.Println(colorGreen + "[Success] " + fmt.Sprintf(msg, args...) + colorReset)
 }
 
 func Warn(msg string, args ...any) {
-	fmt.Println(colorYellow + "⚠ " + fmt.Sprintf(msg, args...) + colorReset)
+	fmt.Println(colorYellow + "[Warn] " + fmt.Sprintf(msg, args...) + colorReset)
 }
 
 func Error(msg string, args ...any) {
-	fmt.Println(colorRed + "✖ " + fmt.Sprintf(msg, args...) + colorReset)
+	fmt.Println(colorRed + "[Error] " + fmt.Sprintf(msg, args...) + colorReset)
 }

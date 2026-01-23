@@ -5,15 +5,21 @@ import (
 	"os/exec"
 )
 
-func Run(cmd string, dir string) error {
-	if cmd == "" {
+func Run(cmd []string, dir string) error {
+	if len(cmd) == 0 {
 		return nil
 	}
 
-	c := exec.Command("sh", "-c", cmd)
-	c.Dir = dir
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
+	for _, c := range cmd {
+		c := exec.Command("sh", "-c", c)
+		c.Dir = dir
+		c.Stdout = os.Stdout
+		c.Stderr = os.Stderr
 
-	return c.Run()
+		if err := c.Run(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

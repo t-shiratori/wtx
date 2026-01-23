@@ -5,11 +5,14 @@ import (
 	"go-worktree-cli/internal/fs"
 	"go-worktree-cli/internal/git"
 	"go-worktree-cli/internal/hook"
+	"go-worktree-cli/internal/plan"
 	"go-worktree-cli/internal/ui"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
+
+var addDryRun bool
 
 var addCmd = &cobra.Command{
 	Use:   "add <branch>",
@@ -38,6 +41,17 @@ var addCmd = &cobra.Command{
 		}
 
 		worktreeDir := filepath.Join(repoRoot, rootDir, branch)
+
+		addPlan := plan.NewAddPlanFromConfig(
+			cfg,
+			branch,
+			worktreeDir,
+		)
+
+		if addDryRun {
+			addPlan.Print()
+			return nil
+		}
 
 		// 4. pre hook
 		if err := hook.Run(cfg.Hooks.PreCreate, repoRoot); err != nil {
@@ -75,5 +89,6 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
+	addCmd.Flags().BoolVar(&addDryRun, "dry-run", false, "show what would be done")
 	rootCmd.AddCommand(addCmd)
 }
