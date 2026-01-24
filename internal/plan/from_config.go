@@ -6,11 +6,13 @@ func NewAddPlanFromConfig(
 	cfg *config.Config,
 	branch string,
 	worktreePath string,
+	createBranch bool,
 ) *AddPlan {
 
 	plan := &AddPlan{
 		Branch:       branch,
 		WorktreePath: worktreePath,
+		CreateBranch: createBranch,
 	}
 
 	// --- hooks ---

@@ -9,6 +9,8 @@ type AddPlan struct {
 	Branch       string
 	WorktreePath string
 
+	CreateBranch bool
+
 	PreHook       []string
 	PostHook      []string
 	CopyFiles     []string
@@ -20,6 +22,10 @@ func (p *AddPlan) Print() {
 
 	fmt.Println("  - branch:  ", p.Branch)
 	fmt.Println("  - path:    ", p.WorktreePath)
+
+	if p.CreateBranch {
+		fmt.Println("  - create branch: yes")
+	}
 
 	if len(p.PreHook) > 0 {
 		fmt.Println("  - pre-hook:")

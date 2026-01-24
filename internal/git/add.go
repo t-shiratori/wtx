@@ -7,8 +7,16 @@ import (
 
 // AddWorktree
 // git worktree add <path> <branch>
-func AddWorktree(path string, branch string) error {
-	cmd := exec.Command("git", "worktree", "add", path, branch)
+func AddWorktree(path string, branch string, createBranch bool) error {
+	args := []string{"worktree", "add"}
+
+	if createBranch {
+		args = append(args, "-b", branch)
+	}
+
+	args = append(args, path, branch)
+
+	cmd := exec.Command("git", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

@@ -12,7 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addDryRun bool
+var (
+	addDryRun    bool
+	createBranch bool
+)
 
 var addCmd = &cobra.Command{
 	Use:   "add <branch>",
@@ -46,6 +49,7 @@ var addCmd = &cobra.Command{
 			cfg,
 			branch,
 			worktreeDir,
+			createBranch,
 		)
 
 		if addDryRun {
@@ -59,7 +63,7 @@ var addCmd = &cobra.Command{
 		}
 
 		// 5. git worktree add
-		if err := git.AddWorktree(worktreeDir, branch); err != nil {
+		if err := git.AddWorktree(worktreeDir, branch, createBranch); err != nil {
 			return err
 		}
 
@@ -90,5 +94,6 @@ var addCmd = &cobra.Command{
 
 func init() {
 	addCmd.Flags().BoolVar(&addDryRun, "dry-run", false, "show what would be done")
+	addCmd.Flags().BoolVarP(&createBranch, "create-branch", "b", false, "create branch if it does not exist")
 	rootCmd.AddCommand(addCmd)
 }
