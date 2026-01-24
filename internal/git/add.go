@@ -12,9 +12,10 @@ func AddWorktree(path string, branch string, createBranch bool) error {
 
 	if createBranch {
 		args = append(args, "-b", branch)
+		args = append(args, path, "HEAD")
+	} else {
+		args = append(args, path, branch)
 	}
-
-	args = append(args, path, branch)
 
 	cmd := exec.Command("git", args...)
 	cmd.Stdout = os.Stdout
