@@ -18,7 +18,7 @@ func NewAddPlanFromConfig(
 	// --- hooks ---
 	plan.PreHook = cfg.Hooks.PreCreate
 	plan.PostHook = cfg.Hooks.PostCreate
-	plan.AfterCopyHook = cfg.Hooks.PostCopy
+	plan.PostCopyHook = cfg.Hooks.PostCopy
 
 	// --- copy ---
 	for _, c := range cfg.Copy {

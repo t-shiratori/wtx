@@ -11,10 +11,10 @@ type AddPlan struct {
 
 	CreateBranch bool
 
-	PreHook       []string
-	PostHook      []string
-	CopyFiles     []string
-	AfterCopyHook []string
+	PreHook      []string
+	PostHook     []string
+	CopyFiles    []string
+	PostCopyHook []string
 }
 
 func (p *AddPlan) Print() {
@@ -48,9 +48,9 @@ func (p *AddPlan) Print() {
 		}
 	}
 
-	if len(p.AfterCopyHook) > 0 {
-		fmt.Println("  - after-copy-hook:")
-		for _, h := range p.AfterCopyHook {
+	if len(p.PostCopyHook) > 0 {
+		fmt.Println("  - post-copy-hook:")
+		for _, h := range p.PostCopyHook {
 			fmt.Println("    -", h)
 		}
 	}
