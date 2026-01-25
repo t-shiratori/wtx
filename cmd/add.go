@@ -24,19 +24,10 @@ var addCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
+		cfg := config.CurrentConfig()
+		repoRoot := config.CurrentRepoRootPath()
+
 		branch := args[0]
-
-		// 1. git repo root
-		repoRoot, err := git.RepoRoot()
-		if err != nil {
-			return err
-		}
-
-		// 2. load config
-		cfg, err := config.LoadConfig(repoRoot)
-		if err != nil {
-			return err
-		}
 
 		// base branch 解決
 		baseBranch := "HEAD"
@@ -47,14 +38,12 @@ var addCmd = &cobra.Command{
 			baseBranch = cfg.Worktree.DefaultBaseBranch
 		}
 
-		// 3. worktree dir
-		rootDir := cfg.Worktree.RootDir
-		if rootDir == "" {
-			rootDir = ".wt/worktrees"
-		}
-
 		// worktree dir path
-		worktreeDir := filepath.Join(repoRoot, rootDir, branch)
+		worktreeDir := config.ResolveWorktreePath(
+			repoRoot,
+			cfg,
+			branch,
+		)
 
 		addPlan := plan.NewAddPlanFromConfig(
 			cfg,

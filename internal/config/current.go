@@ -1,16 +1,28 @@
 package config
 
-var current *Config
+var (
+	currentConifg *Config
+	repoRootPath  string
+)
 
-// SetCurrent はロード済みの設定を保持する
-func SetCurrent(cfg *Config) {
-	current = cfg
+// ロード済みの設定を保持する
+func SetCurrentConfig(cfg *Config) {
+	currentConifg = cfg
 }
 
-// Current は現在の設定を取得する
-func Current() *Config {
-	if current == nil {
+// CurrentConfig は現在の設定を取得する
+func CurrentConfig() *Config {
+	if currentConifg == nil {
 		return &Config{}
 	}
-	return current
+	return currentConifg
+}
+
+// リポジトリのルートパスをセット
+func SetCurrentRepoRoot(path string) {
+	repoRootPath = path
+}
+
+func CurrentRepoRootPath() string {
+	return repoRootPath
 }

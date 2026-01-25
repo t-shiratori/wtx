@@ -2,13 +2,12 @@ package config
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/pelletier/go-toml/v2"
 )
 
 func LoadConfig(repoRoot string) (*Config, error) {
-	path := filepath.Join(repoRoot, ".wt", "config.toml")
+	path := ConfigPath(repoRoot)
 
 	configSrc, err := os.ReadFile(path)
 	if err != nil {

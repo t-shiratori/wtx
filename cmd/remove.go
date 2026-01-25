@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"go-worktree-cli/internal/config"
 	"go-worktree-cli/internal/git"
 	"go-worktree-cli/internal/plan"
 	"go-worktree-cli/internal/ui"
@@ -20,14 +21,12 @@ var removeCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		repoRoot, err := git.RepoRoot()
-		if err != nil {
-			return err
-		}
+		cfg := config.CurrentConfig()
+		repoRoot := config.CurrentRepoRootPath()
 
 		for _, path := range args {
 
-			path, err := git.ResolveWorktreePath(repoRoot, path)
+			path, err := config.ResolveInputWorktreePath(repoRoot, cfg, path)
 			if err != nil {
 				return err
 			}
@@ -74,9 +73,8 @@ var removeCmd = &cobra.Command{
 }
 
 func init() {
-	removeCmd.Flags().BoolVar(&removeBranch, "branch", false, "also delete branch")
-	removeCmd.Flags().BoolVar(&force, "force", false, "force remove worktree and branch")
+	removeCmd.Flags().BoolVarP(&removeBranch, "branch", "b", false, "also delete branch")
+	removeCmd.Flags().BoolVarP(&force, "force", "f", false, "force remove worktree and branch")
 	removeCmd.Flags().BoolVar(&dryRun, "dry-run", false, "show what would be done")
-
 	rootCmd.AddCommand(removeCmd)
 }

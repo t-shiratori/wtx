@@ -2,29 +2,9 @@ package git
 
 import (
 	"errors"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 )
-
-// ResolveWorktreePath
-// ユーザーが指定した path を実際の worktree パスに解決する
-func ResolveWorktreePath(repoRoot string, input string) (string, error) {
-	// 1. 絶対パスならそのまま
-	if filepath.IsAbs(input) {
-		return input, nil
-	}
-
-	// 2. 相対パスとして実在するならそのまま
-	if _, err := os.Stat(input); err == nil {
-		return filepath.Abs(input)
-	}
-
-	// 3. .wt/worktrees 以下として解決
-	wtPath := filepath.Join(repoRoot, ".wt", "worktrees", input)
-	return filepath.Abs(wtPath)
-}
 
 // RepoRoot
 // リポジトリのルートディレクトリまでのパスを返す

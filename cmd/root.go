@@ -21,16 +21,20 @@ func init() {
 			return err
 		}
 
-		if err := config.EnsureWTDir(repoRoot); err != nil {
-			return err
-		}
+		config.SetCurrentRepoRoot(repoRoot)
 
 		cfg, err := config.LoadConfig(repoRoot)
 		if err != nil {
 			return err
 		}
 
-		config.SetCurrent(cfg)
+		worktreeDir := config.ResolveWorktreesDir(repoRoot, cfg)
+
+		if err := config.EnsureWTDir(worktreeDir); err != nil {
+			return err
+		}
+
+		config.SetCurrentConfig(cfg)
 		return nil
 	}
 }

@@ -2,9 +2,8 @@ package config
 
 import (
 	"os"
-	"path/filepath"
 )
 
-func EnsureWTDir(repoRoot string) error {
-	return os.MkdirAll(filepath.Join(repoRoot, ".wt", "worktrees"), 0755)
+func EnsureWTDir(wtDir string) error {
+	return os.MkdirAll(wtDir, 0755)
 }
