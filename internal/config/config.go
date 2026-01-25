@@ -7,7 +7,8 @@ type Config struct {
 }
 
 type WorktreeConfig struct {
-	RootDir string `toml:"root_dir"`
+	RootDir           string `toml:"root_dir"`
+	DefaultBaseBranch string `toml:"default_base_branch"`
 }
 
 type CopyConfig struct {

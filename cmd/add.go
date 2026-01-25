@@ -37,6 +37,11 @@ var addCmd = &cobra.Command{
 			return err
 		}
 
+		baseBranch := "HEAD"
+		if cfg.Worktree.DefaultBaseBranch != "" {
+			baseBranch = cfg.Worktree.DefaultBaseBranch
+		}
+
 		// 3. worktree dir
 		rootDir := cfg.Worktree.RootDir
 		if rootDir == "" {
@@ -50,6 +55,7 @@ var addCmd = &cobra.Command{
 			branch,
 			worktreeDir,
 			createBranch,
+			baseBranch,
 		)
 
 		if addDryRun {
@@ -63,7 +69,7 @@ var addCmd = &cobra.Command{
 		}
 
 		// 5. git worktree add
-		if err := git.AddWorktree(worktreeDir, branch, createBranch); err != nil {
+		if err := git.AddWorktree(worktreeDir, branch, createBranch, baseBranch); err != nil {
 			return err
 		}
 

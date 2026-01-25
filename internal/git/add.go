@@ -7,12 +7,12 @@ import (
 
 // AddWorktree
 // git worktree add <path> <branch>
-func AddWorktree(path string, branch string, createBranch bool) error {
+func AddWorktree(path string, branch string, createBranch bool, baseBranch string) error {
 	args := []string{"worktree", "add"}
 
 	if createBranch {
 		args = append(args, "-b", branch)
-		args = append(args, path, "HEAD")
+		args = append(args, path, baseBranch)
 	} else {
 		args = append(args, path, branch)
 	}

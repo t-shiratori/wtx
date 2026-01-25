@@ -7,6 +7,7 @@ import (
 
 type AddPlan struct {
 	Branch       string
+	BaseBranch   string
 	WorktreePath string
 
 	CreateBranch bool
@@ -22,6 +23,7 @@ func (p *AddPlan) Print() {
 
 	fmt.Println("  - branch:  ", p.Branch)
 	fmt.Println("  - path:    ", p.WorktreePath)
+	fmt.Println("  - base branch:", p.BaseBranch)
 
 	if p.CreateBranch {
 		fmt.Println("  - create branch: yes")

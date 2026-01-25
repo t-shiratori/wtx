@@ -7,12 +7,14 @@ func NewAddPlanFromConfig(
 	branch string,
 	worktreePath string,
 	createBranch bool,
+	baseBranch string,
 ) *AddPlan {
 
 	plan := &AddPlan{
 		Branch:       branch,
 		WorktreePath: worktreePath,
 		CreateBranch: createBranch,
+		BaseBranch:   baseBranch,
 	}
 
 	// --- hooks ---
