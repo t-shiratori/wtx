@@ -23,7 +23,7 @@ func (p *AddPlan) Print() {
 
 	fmt.Println("  - branch:  ", p.Branch)
 	fmt.Println("  - path:    ", p.WorktreePath)
-	fmt.Println("  - base branch:", p.BaseBranch)
+	fmt.Println("  - from:", p.BaseBranch)
 
 	if p.CreateBranch {
 		fmt.Println("  - create branch: yes")

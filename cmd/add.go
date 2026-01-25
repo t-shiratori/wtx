@@ -15,6 +15,7 @@ import (
 var (
 	addDryRun    bool
 	createBranch bool
+	fromBranch   string
 )
 
 var addCmd = &cobra.Command{
@@ -37,8 +38,12 @@ var addCmd = &cobra.Command{
 			return err
 		}
 
+		// base branch 解決
 		baseBranch := "HEAD"
-		if cfg.Worktree.DefaultBaseBranch != "" {
+
+		if fromBranch != "" {
+			baseBranch = fromBranch
+		} else if cfg.Worktree.DefaultBaseBranch != "" {
 			baseBranch = cfg.Worktree.DefaultBaseBranch
 		}
 
@@ -48,6 +53,7 @@ var addCmd = &cobra.Command{
 			rootDir = ".wt/worktrees"
 		}
 
+		// worktree dir path
 		worktreeDir := filepath.Join(repoRoot, rootDir, branch)
 
 		addPlan := plan.NewAddPlanFromConfig(
@@ -99,7 +105,8 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
-	addCmd.Flags().BoolVar(&addDryRun, "dry-run", false, "show what would be done")
 	addCmd.Flags().BoolVarP(&createBranch, "create-branch", "b", false, "create branch if it does not exist")
+	addCmd.Flags().StringVar(&fromBranch, "from", "", "base branch or commit")
+	addCmd.Flags().BoolVar(&addDryRun, "dry-run", false, "show what would be done")
 	rootCmd.AddCommand(addCmd)
 }
