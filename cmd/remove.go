@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"go-worktree-cli/internal/app"
 	"go-worktree-cli/internal/config"
 	"go-worktree-cli/internal/git"
 	"go-worktree-cli/internal/plan"
@@ -21,8 +22,9 @@ var removeCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		cfg := config.CurrentConfig()
-		repoRoot := config.CurrentRepoRootPath()
+		appCtx := cmd.Context().Value(app.Key).(*app.Context)
+		cfg := appCtx.Config
+		repoRoot := appCtx.RepoRoot
 
 		for _, path := range args {
 

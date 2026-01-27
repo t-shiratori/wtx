@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"go-worktree-cli/internal/app"
 	"go-worktree-cli/internal/config"
 	"go-worktree-cli/internal/fs"
 	"go-worktree-cli/internal/git"
@@ -24,8 +25,9 @@ var addCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		cfg := config.CurrentConfig()
-		repoRoot := config.CurrentRepoRootPath()
+		appCtx := cmd.Context().Value(app.Key).(*app.Context)
+		cfg := appCtx.Config
+		repoRoot := appCtx.RepoRoot
 
 		branch := args[0]
 

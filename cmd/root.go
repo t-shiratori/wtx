@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+	"go-worktree-cli/internal/app"
 	"go-worktree-cli/internal/config"
 	"go-worktree-cli/internal/git"
 	"os"
@@ -21,8 +23,6 @@ func init() {
 			return err
 		}
 
-		config.SetCurrentRepoRoot(repoRoot)
-
 		cfg, err := config.LoadConfig(repoRoot)
 		if err != nil {
 			return err
@@ -34,7 +34,17 @@ func init() {
 			return err
 		}
 
-		config.SetCurrentConfig(cfg)
+		ctx := context.WithValue(
+			cmd.Context(),
+			app.Key,
+			&app.Context{
+				Config:   cfg,
+				RepoRoot: repoRoot,
+			},
+		)
+
+		cmd.SetContext(ctx)
+
 		return nil
 	}
 }
