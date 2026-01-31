@@ -3,6 +3,7 @@ package cmd
 import (
 	"go-worktree-cli/internal/app"
 	"go-worktree-cli/internal/config"
+	"go-worktree-cli/internal/domain/worktree"
 	"go-worktree-cli/internal/fs"
 	"go-worktree-cli/internal/git"
 	"go-worktree-cli/internal/hook"
@@ -32,13 +33,7 @@ var addCmd = &cobra.Command{
 		branch := args[0]
 
 		// base branch 解決
-		baseBranch := "HEAD"
-
-		if fromBranch != "" {
-			baseBranch = fromBranch
-		} else if cfg.Worktree.DefaultBaseBranch != "" {
-			baseBranch = cfg.Worktree.DefaultBaseBranch
-		}
+		baseBranch := worktree.ResolveBaseBranch(fromBranch, cfg.Worktree.DefaultBaseBranch)
 
 		// worktree dir path
 		worktreeDir := config.ResolveWorktreePath(
@@ -56,7 +51,7 @@ var addCmd = &cobra.Command{
 		)
 
 		if addDryRun {
-			addPlan.Print()
+			addPlan.Print(cmd.OutOrStdout())
 			return nil
 		}
 
@@ -70,7 +65,7 @@ var addCmd = &cobra.Command{
 			return err
 		}
 
-		ui.Success("Added worktree '%s'", worktreeDir)
+		ui.Success(cmd.OutOrStdout(), "Added worktree '%s'", worktreeDir)
 
 		// 6. post create hook
 		if err := hook.Run(cfg.Hooks.PostCreate, worktreeDir); err != nil {

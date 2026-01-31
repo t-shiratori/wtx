@@ -3,6 +3,7 @@ package plan
 import (
 	"fmt"
 	"go-worktree-cli/internal/ui"
+	"io"
 )
 
 type AddPlan struct {
@@ -18,42 +19,41 @@ type AddPlan struct {
 	PostCopyHook []string
 }
 
-func (p *AddPlan) Print() {
-	ui.Info("Dry run: add worktree")
+func (p *AddPlan) Print(w io.Writer) {
+	ui.Info(w, "Dry run: add worktree")
 
-	fmt.Println("  - branch:  ", p.Branch)
-	fmt.Println("  - path:    ", p.WorktreePath)
-	fmt.Println("  - from:", p.BaseBranch)
-
+	fmt.Fprintln(w, "  - branch:  ", p.Branch)
+	fmt.Fprintln(w, "  - path:    ", p.WorktreePath)
+	fmt.Fprintln(w, "  - from:", p.BaseBranch)
 	if p.CreateBranch {
-		fmt.Println("  - create branch: yes")
+		ui.Info(w, "  - create-branch: %s", p.Branch)
 	}
 
 	if len(p.PreHook) > 0 {
-		fmt.Println("  - pre-hook:")
+		ui.Info(w, "  - pre-hook:")
 		for _, h := range p.PreHook {
-			fmt.Println("    -", h)
+			ui.Info(w, "    - %s", h)
 		}
 	}
 
 	if len(p.PostHook) > 0 {
-		fmt.Println("  - post-hook:")
+		ui.Info(w, "  - post-hook:")
 		for _, h := range p.PostHook {
-			fmt.Println("    -", h)
+			ui.Info(w, "    - %s", h)
 		}
 	}
 
 	if len(p.CopyFiles) > 0 {
-		fmt.Println("  - copy:")
+		ui.Info(w, "  - copy:")
 		for _, f := range p.CopyFiles {
-			fmt.Println("    -", f)
+			ui.Info(w, "    - %s", f)
 		}
 	}
 
 	if len(p.PostCopyHook) > 0 {
-		fmt.Println("  - post-copy-hook:")
+		ui.Info(w, "  - post-copy-hook:")
 		for _, h := range p.PostCopyHook {
-			fmt.Println("    -", h)
+			ui.Info(w, "    - %s", h)
 		}
 	}
 }

@@ -1,6 +1,9 @@
 package ui
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
 const (
 	colorReset  = "\033[0m"
@@ -10,18 +13,18 @@ const (
 	colorBlue   = "\033[34m"
 )
 
-func Info(msg string, args ...any) {
-	fmt.Println(colorBlue + "[Info] " + fmt.Sprintf(msg, args...) + colorReset)
+func Info(w io.Writer, msg string, args ...any) {
+	fmt.Fprintf(w, "\033[34m[Info] "+msg+"\033[0m\n", args...)
 }
 
-func Success(msg string, args ...any) {
-	fmt.Println(colorGreen + "[Success] " + fmt.Sprintf(msg, args...) + colorReset)
+func Success(w io.Writer, msg string, args ...any) {
+	fmt.Fprintln(w, colorGreen+"[Success] "+fmt.Sprintf(msg, args...)+colorReset)
 }
 
-func Warn(msg string, args ...any) {
-	fmt.Println(colorYellow + "[Warn] " + fmt.Sprintf(msg, args...) + colorReset)
+func Warn(w io.Writer, msg string, args ...any) {
+	fmt.Fprintln(w, colorYellow+"[Warn] "+fmt.Sprintf(msg, args...)+colorReset)
 }
 
-func Error(msg string, args ...any) {
-	fmt.Println(colorRed + "[Error] " + fmt.Sprintf(msg, args...) + colorReset)
+func Error(w io.Writer, msg string, args ...any) {
+	fmt.Fprintln(w, colorRed+"[Error] "+fmt.Sprintf(msg, args...)+colorReset)
 }

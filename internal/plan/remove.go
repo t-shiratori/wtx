@@ -3,6 +3,7 @@ package plan
 import (
 	"fmt"
 	"go-worktree-cli/internal/ui"
+	"io"
 )
 
 type RemovePlan struct {
@@ -11,16 +12,16 @@ type RemovePlan struct {
 	Force        bool
 }
 
-func (p *RemovePlan) Print() {
-	ui.Info("Dry run: remove worktree")
+func (p *RemovePlan) Print(w io.Writer) {
+	ui.Info(w, "Dry run: remove worktree")
 
-	fmt.Println("  - worktree:", p.WorktreePath)
+	fmt.Fprintln(w, "  - worktree:", p.WorktreePath)
 
 	if p.Branch != "" {
-		fmt.Println("  - branch:", p.Branch)
+		ui.Info(w, "  - branch: %s", p.Branch)
 	}
 
 	if p.Force {
-		fmt.Println("  - force: true")
+		ui.Info(w, "  - force: true")
 	}
 }

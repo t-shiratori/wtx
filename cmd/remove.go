@@ -50,7 +50,7 @@ var removeCmd = &cobra.Command{
 			}
 
 			if dryRun {
-				plan.Print()
+				plan.Print(cmd.OutOrStdout())
 				continue
 			}
 
@@ -59,7 +59,7 @@ var removeCmd = &cobra.Command{
 				return err
 			}
 
-			ui.Success("Removed worktree '%s'", path)
+			ui.Success(cmd.OutOrStdout(), "Removed worktree '%s'", path)
 
 			// 対応するブランチも削除
 			if removeBranch {
@@ -68,7 +68,7 @@ var removeCmd = &cobra.Command{
 				}
 			}
 
-			ui.Success("Deleted branch '%s'", branch)
+			ui.Success(cmd.OutOrStdout(), "Deleted branch '%s'", branch)
 		}
 		return nil
 	},
