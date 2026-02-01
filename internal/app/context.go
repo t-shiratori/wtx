@@ -1,6 +1,6 @@
 package app
 
-import "go-worktree-cli/internal/config"
+import "wtx/internal/config"
 
 // context に載せるアプリ全体の状態
 type Context struct {

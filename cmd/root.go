@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"context"
-	"go-worktree-cli/internal/app"
-	"go-worktree-cli/internal/config"
-	"go-worktree-cli/internal/git"
+	"wtx/internal/app"
+	"wtx/internal/config"
+	"wtx/internal/git"
 	"os"
 
 	"github.com/spf13/cobra"

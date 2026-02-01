@@ -1,4 +1,4 @@
-module go-worktree-cli
+module wtx
 
 go 1.25.6
 

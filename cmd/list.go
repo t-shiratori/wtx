@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"go-worktree-cli/internal/git"
+	"wtx/internal/git"
 
 	"github.com/spf13/cobra"
 )

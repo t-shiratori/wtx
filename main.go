@@ -1,6 +1,6 @@
 package main
 
-import "go-worktree-cli/cmd"
+import "wtx/cmd"
 
 func main() {
 	cmd.Execute()

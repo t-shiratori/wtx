@@ -1,6 +1,6 @@
 package plan
 
-import "go-worktree-cli/internal/config"
+import "wtx/internal/config"
 
 func NewAddPlanFromConfig(
 	cfg *config.Config,

@@ -3,8 +3,8 @@ package cmd
 import (
 	"bytes"
 	"context"
-	"go-worktree-cli/internal/app"
-	"go-worktree-cli/internal/config"
+	"wtx/internal/app"
+	"wtx/internal/config"
 	"testing"
 )
 

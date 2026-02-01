@@ -2,7 +2,7 @@ package plan
 
 import (
 	"fmt"
-	"go-worktree-cli/internal/ui"
+	"wtx/internal/ui"
 	"io"
 )
 

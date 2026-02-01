@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"go-worktree-cli/internal/app"
-	"go-worktree-cli/internal/config"
+	"wtx/internal/app"
+	"wtx/internal/config"
 )
 
 func testAppContext(t *testing.T) context.Context {
