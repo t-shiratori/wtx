@@ -2,16 +2,16 @@ package cmd
 
 import (
 	"context"
+	"os"
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/git"
-	"os"
 
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "wt",
+	Use:   "wtx",
 	Short: "A simple git worktree helper",
 	Long:  "wt is a small CLI tool to manage git worktrees easily.",
 }
@@ -30,7 +30,7 @@ func init() {
 
 		worktreeDir := config.ResolveWorktreesDir(repoRoot, cfg)
 
-		if err := config.EnsureWTDir(worktreeDir); err != nil {
+		if err := config.EnsureConfigRootDir(worktreeDir); err != nil {
 			return err
 		}
 

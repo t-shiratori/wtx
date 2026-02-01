@@ -4,6 +4,6 @@ import (
 	"os"
 )
 
-func EnsureWTDir(wtDir string) error {
-	return os.MkdirAll(wtDir, 0755)
+func EnsureConfigRootDir(configRootDir string) error {
+	return os.MkdirAll(configRootDir, 0755)
 }

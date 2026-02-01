@@ -1,9 +1,8 @@
 package plan
 
 import (
-	"fmt"
-	"wtx/internal/ui"
 	"io"
+	"wtx/internal/ui"
 )
 
 type RemovePlan struct {
@@ -15,7 +14,7 @@ type RemovePlan struct {
 func (p *RemovePlan) Print(w io.Writer) {
 	ui.Info(w, "Dry run: remove worktree")
 
-	fmt.Fprintln(w, "  - worktree:", p.WorktreePath)
+	ui.Info(w, "  - worktree: %s", p.WorktreePath)
 
 	if p.Branch != "" {
 		ui.Info(w, "  - branch: %s", p.Branch)

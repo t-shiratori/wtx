@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	ConfigFileName      = "config.toml"
-	DefaultWTDir        = ".wt"
-	DefaultWorktreesDir = "worktrees"
-	DefaultWorktreeRoot = ".wt/worktrees"
+	ConfigFileName       = "config.toml"
+	DefaultConfigRootDir = ".wtx"
+	DefaultWorktreesDir  = "worktrees"
+	DefaultWorktreeRoot  = ".wtx/worktrees"
 )
 
 // DefaultWorktreesDir へのパスを作成する
@@ -17,14 +17,14 @@ func createWorktreesPath(repoRoot string, rootDir string) string {
 	return filepath.Join(repoRoot, rootDir, DefaultWorktreesDir)
 }
 
-// .wt ディレクトリ
-func WTDir(repoRoot string) string {
-	return filepath.Join(repoRoot, DefaultWTDir)
+// wtxコンフィグディレクトリ
+func ConfigRootDir(repoRoot string) string {
+	return filepath.Join(repoRoot, DefaultConfigRootDir)
 }
 
-// .wt/config.toml
+// .wtx/config.toml
 func ConfigPath(repoRoot string) string {
-	return filepath.Join(WTDir(repoRoot), ConfigFileName)
+	return filepath.Join(ConfigRootDir(repoRoot), ConfigFileName)
 }
 
 // worktree ルートディレクトリ（設定込みで解決）
@@ -32,7 +32,7 @@ func ResolveWorktreesDir(repoRoot string, cfg *Config) string {
 	if cfg.Worktree.RootDir != "" {
 		return createWorktreesPath(repoRoot, cfg.Worktree.RootDir)
 	}
-	return createWorktreesPath(repoRoot, DefaultWTDir)
+	return createWorktreesPath(repoRoot, DefaultConfigRootDir)
 }
 
 // 個々の worktree パス
