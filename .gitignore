@@ -63,3 +63,5 @@ Temporary Items
 .wt*/
 
 .env*
+
+dist/

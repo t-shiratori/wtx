@@ -1,0 +1,57 @@
+version: 2
+
+project_name: wtx
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: wtx
+    main: .
+    binary: wtx
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: wtx
+    formats: binary
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+release:
+  github:
+    owner: t-shiratori
+    name: wtx
+
+homebrew_casks:
+  - name: wtx
+
+    directory: Casks
+
+    homepage: "https://github.com/t-shiratori/wtx"
+    description: "Git worktree management CLI"
+    license: "MIT"
+
+    repository:
+      owner: t-shiratori
+      name: homebrew-tap
+
+    url:
+      verified: github.com/t-shiratori/wtx
+
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr",
+              args: ["-dr", "com.apple.quarantine", "#{staged_path}/wtx"]
+          end
+
