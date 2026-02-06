@@ -13,7 +13,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "wtx",
 	Short: "A simple git worktree helper",
-	Long:  "wt is a small CLI tool to manage git worktrees easily.",
+	Long:  "wtx is a small CLI tool to manage git worktrees easily.",
 }
 
 func init() {
