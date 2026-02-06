@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"path/filepath"
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/domain/worktree"
@@ -9,7 +10,6 @@ import (
 	"wtx/internal/hook"
 	"wtx/internal/plan"
 	"wtx/internal/ui"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -74,6 +74,14 @@ var addCmd = &cobra.Command{
 
 		// 7. copy files
 		for _, c := range cfg.Copy {
+			if c.From == "" {
+				ui.Warn(cmd.OutOrStdout(), "Skipping empty 'from' in copy config")
+				continue
+			}
+			if c.To == "" {
+				ui.Warn(cmd.OutOrStdout(), "Skipping empty 'to' in copy config")
+				continue
+			}
 			src := filepath.Join(repoRoot, c.From)
 			dst := filepath.Join(worktreeDir, c.To)
 			if err := fs.CopyFile(src, dst); err != nil {
