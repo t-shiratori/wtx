@@ -6,6 +6,8 @@ import (
 )
 
 const (
+	AppName              = "wtx"
+	GlobalConifgDirName  = ".config"
 	ConfigFileName       = "config.toml"
 	DefaultConfigRootDir = ".wtx"
 	DefaultWorktreesDir  = "worktrees"
@@ -24,9 +26,9 @@ func ConfigRootDir(repoRoot string) string {
 	return filepath.Join(repoRoot, DefaultConfigRootDir)
 }
 
-// ConfigPath
-// .wtx/config.toml
-func ConfigPath(repoRoot string) string {
+// LocalConfigPath
+// wtxコンフィグファイルのパス
+func LocalConfigPath(repoRoot string) string {
 	return filepath.Join(ConfigRootDir(repoRoot), ConfigFileName)
 }
 
@@ -60,4 +62,24 @@ func ResolveInputWorktreePath(repoRoot string, cfg *Config, inputPath string) (s
 	}
 
 	return filepath.Abs(filepath.Join(ResolveWorktreesDir(repoRoot, cfg), inputPath))
+}
+
+// EnsureConfigRootDir
+// config root dir を作成する
+func GlobalConfigDir() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, GlobalConifgDirName, AppName), nil
+}
+
+// GlobalLocalConfigPath
+// グローバル config.toml のパス
+func GlobalConfigPath() (string, error) {
+	dir, err := GlobalConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, ConfigFileName), nil
 }

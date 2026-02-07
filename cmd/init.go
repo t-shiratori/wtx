@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -33,13 +32,15 @@ func runInit() error {
 		if err != nil {
 			return err
 		}
-		baseDir = filepath.Join(home, config.DefaultConfigRootDir)
+		baseDir = filepath.Join(home, config.GlobalConifgDirName, config.AppName)
 	}
 
+	// 最終的な config.toml のパス
 	configPath := filepath.Join(baseDir, config.ConfigFileName)
 
 	if _, err := os.Stat(configPath); err == nil && !initForce {
-		return fmt.Errorf("%s already exists (use --force to overwrite)", configPath)
+		ui.Error(os.Stdout, "%s already exists (use --force to overwrite)", configPath)
+		return err
 	}
 
 	if err := os.MkdirAll(baseDir, 0755); err != nil {
