@@ -99,7 +99,7 @@ var removeCmd = &cobra.Command{
 
 			if err != nil {
 				// git の stderr も含めてそのまま表示
-				ui.Error(cmd.ErrOrStderr(), err.Error())
+				ui.Error(cmd.ErrOrStderr(), "%v", err)
 				failed++
 			}
 		}
