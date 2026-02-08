@@ -3,6 +3,7 @@ package cmd
 import (
 	"wtx/internal/app"
 	"wtx/internal/config"
+	"wtx/internal/fs"
 	"wtx/internal/git"
 	"wtx/internal/plan"
 	"wtx/internal/tui"
@@ -93,6 +94,11 @@ var removeCmd = &cobra.Command{
 					}
 					ui.Success(cmd.OutOrStdout(), "Deleted branch '%s'", branch)
 				}
+
+				// --- Cleanup empty directories ---
+				worktreesRoot := config.ResolveWorktreesDir(repoRoot, cfg)
+				_ = fs.RemoveIfEmpty(path)
+				_ = fs.RemoveEmptyParents(path, worktreesRoot)
 
 				return nil
 			}()
