@@ -11,6 +11,7 @@ wtxは、Gitのworktree機能を効率的に管理するための小型CLIツー
 - TUI（ターミナルUI）によるworktree選択
 - フック機能（pre_create, post_create, post_copy）
 - ファイルの自動コピー機能
+- 設定ファイルの初期化（ローカル/グローバル）
 
 ## インストール
 
@@ -100,6 +101,34 @@ wtx remove -b feature/old-feature
 
 # 複数のworktreeを一度に削除
 wtx remove feature/a feature/b feature/c
+```
+
+### 設定の初期化
+
+```bash
+wtx init
+```
+
+設定ファイル（`config.toml`）を初期化します。
+
+**オプション:**
+
+| オプション | 説明 |
+|-----------|------|
+| `-f, --force` | 既存の設定ファイルを上書き |
+| `--global` | グローバル設定を `~/.config/wtx/` に作成 |
+
+**例:**
+
+```bash
+# プロジェクトローカルの設定を作成（.wtx/config.toml）
+wtx init
+
+# 既存の設定を上書き
+wtx init --force
+
+# グローバル設定を作成（~/.config/wtx/config.toml）
+wtx init --global
 ```
 
 ## 設定
