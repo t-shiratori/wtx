@@ -1,19 +1,19 @@
 # wtx
 
-Git worktreeを簡単に管理するためのCLIツール。
+A CLI tool for easily managing Git worktrees.
 
-## 概要
+## Overview
 
-wtxは、Gitのworktree機能を効率的に管理するための小型CLIツールです。複数のブランチで並行作業を行う際に、worktreeの作成・削除・一覧表示を簡単に行えます。
+wtx is a lightweight CLI tool for efficiently managing Git's worktree feature. It makes it easy to create, delete, and list worktrees when working on multiple branches in parallel.
 
-主な機能:
-- worktreeの作成・削除・一覧表示
-- TUI（ターミナルUI）によるworktree選択
-- フック機能（pre_create, post_create, post_copy）
-- ファイルの自動コピー機能
-- 設定ファイルの初期化（ローカル/グローバル）
+Key features:
+- Create, delete, and list worktrees
+- Interactive worktree selection via TUI (Terminal UI)
+- Hook functionality (pre_create, post_create, post_copy)
+- Automatic file copying
+- Configuration file initialization (local/global)
 
-## インストール
+## Installation
 
 ### Homebrew
 
@@ -21,11 +21,11 @@ wtxは、Gitのworktree機能を効率的に管理するための小型CLIツー
 brew install t-shiratori/tap/wtx
 ```
 
-### GitHubリリースから直接ダウンロード
+### Direct download from GitHub releases
 
-[Releases](https://github.com/t-shiratori/wtx/releases)から`wtx_darwin_amd64`（Intel Mac）または`wtx_darwin_arm64`（Apple Silicon）をダウンロードしてください。
+Download `wtx_darwin_amd64` (Intel Mac) or `wtx_darwin_arm64` (Apple Silicon) from [Releases](https://github.com/t-shiratori/wtx/releases).
 
-### ソースからビルド
+### Build from source
 
 ```bash
 git clone https://github.com/t-shiratori/wtx.git
@@ -33,142 +33,142 @@ cd wtx
 go build -o wtx .
 ```
 
-## 使い方
+## Usage
 
-### worktreeの追加
+### Add a worktree
 
 ```bash
 wtx add <branch>
 ```
 
-**オプション:**
+**Options:**
 
-| オプション | 説明 |
-|-----------|------|
-| `-b, --create-branch` | ブランチが存在しない場合は新規作成 |
-| `--from <branch>` | ベースブランチまたはコミットを指定 |
-| `--dry-run` | 実行内容を表示するだけで実行しない |
+| Option | Description |
+|--------|-------------|
+| `-b, --create-branch` | Create a new branch if it doesn't exist |
+| `--from <branch>` | Specify the base branch |
+| `--dry-run` | Show what would be done without executing |
 
-**例:**
+**Examples:**
 
 ```bash
-# 既存ブランチからworktreeを作成
+# Create a worktree from an existing branch
 wtx add feature/new-feature
 
-# 新しいブランチを作成してworktreeを追加
+# Create a new branch and add a worktree
 wtx add -b feature/new-feature
 
-# mainブランチをベースに新しいブランチを作成
+# Create a new branch based on main
 wtx add -b feature/new-feature --from main
 
-# 実行内容を確認（dry-run）
+# Preview what would be done (dry-run)
 wtx add -b feature/new-feature --dry-run
 ```
 
-### worktreeの一覧表示
+### List worktrees
 
 ```bash
 wtx list
 ```
 
-現在のリポジトリに存在するworktreeの一覧を表示します。
+Displays a list of worktrees in the current repository.
 
-### worktreeの削除
+### Remove a worktree
 
 ```bash
 wtx remove [worktree ...]
 ```
 
-**オプション:**
+**Options:**
 
-| オプション | 説明 |
-|-----------|------|
-| `-b, --branch` | worktreeと一緒にブランチも削除 |
-| `-f, --force` | 強制削除 |
-| `--dry-run` | 実行内容を表示するだけで実行しない |
+| Option | Description |
+|--------|-------------|
+| `-b, --branch` | Also delete the branch along with the worktree |
+| `-f, --force` | Force deletion |
+| `--dry-run` | Show what would be done without executing |
 
-**例:**
+**Examples:**
 
 ```bash
-# TUIで対話的に選択して削除
+# Interactively select and delete using TUI
 wtx remove
 
-# 指定したworktreeを削除
+# Delete a specific worktree
 wtx remove feature/old-feature
 
-# ブランチも一緒に削除
+# Also delete the branch
 wtx remove -b feature/old-feature
 
-# 複数のworktreeを一度に削除
+# Delete multiple worktrees at once
 wtx remove feature/a feature/b feature/c
 ```
 
-### 設定の初期化
+### Initialize configuration
 
 ```bash
 wtx init
 ```
 
-設定ファイル（`config.toml`）を初期化します。
+Initializes the configuration file (`config.toml`).
 
-**オプション:**
+**Options:**
 
-| オプション | 説明 |
-|-----------|------|
-| `-f, --force` | 既存の設定ファイルを上書き |
-| `--global` | グローバル設定を `~/.config/wtx/` に作成 |
+| Option | Description |
+|--------|-------------|
+| `-f, --force` | Overwrite existing configuration file |
+| `--global` | Create global configuration in `~/.config/wtx/` |
 
-**例:**
+**Examples:**
 
 ```bash
-# プロジェクトローカルの設定を作成（.wtx/config.toml）
+# Create project-local configuration (.wtx/config.toml)
 wtx init
 
-# 既存の設定を上書き
+# Overwrite existing configuration
 wtx init --force
 
-# グローバル設定を作成（~/.config/wtx/config.toml）
+# Create global configuration (~/.config/wtx/config.toml)
 wtx init --global
 ```
 
-## 設定
+## Configuration
 
-プロジェクトルートに`.wtx/config.toml`を作成して設定をカスタマイズできます。
+You can customize settings by creating `.wtx/config.toml` in your project root.
 
 ```toml
 [worktree]
-root_dir = ""                    # worktreeディレクトリ（空の場合は.wtx/worktrees）
-default_base_branch = "main"     # デフォルトのベースブランチ
+root_dir = ""                    # Worktree directory (defaults to .wtx/worktrees if empty)
+default_base_branch = "main"     # Default base branch
 
-[[copy]]                         # ファイルコピー設定（複数指定可）
-from = ".env.example"            # コピー元（リポジトリルート相対）
-to = ".env"                      # コピー先（worktree相対）
+[[copy]]                         # File copy settings (multiple entries allowed)
+from = ".env.example"            # Source file (relative to repository root)
+to = ".env"                      # Destination file (relative to worktree)
 
-[hooks]                          # フック設定
-pre_create = ["echo pre"]        # worktree作成前に実行
-post_create = ["echo post"]      # worktree作成後に実行
-post_copy = ["echo copied"]      # ファイルコピー後に実行
+[hooks]                          # Hook settings
+pre_create = ["echo pre"]        # Run before worktree creation
+post_create = ["echo post"]      # Run after worktree creation
+post_copy = ["echo copied"]      # Run after file copying
 ```
 
-### 設定項目
+### Configuration options
 
 #### `[worktree]`
 
-| 項目 | 説明 | デフォルト |
-|------|------|----------|
-| `root_dir` | worktreeを作成するディレクトリ | `.wtx/worktrees` |
-| `default_base_branch` | `--from`を省略した場合のベースブランチ | `main` |
+| Option | Description | Default |
+|--------|-------------|---------|
+| `root_dir` | Directory where worktrees are created | `.wtx/worktrees` |
+| `default_base_branch` | Base branch used when `--from` is omitted | `main` |
 
 #### `[[copy]]`
 
-worktree作成時に自動でファイルをコピーします。複数指定可能です。
+Automatically copies files when creating a worktree. Multiple entries can be specified.
 
-| 項目 | 説明 |
-|------|------|
-| `from` | コピー元ファイル（リポジトリルートからの相対パス） |
-| `to` | コピー先ファイル（worktreeからの相対パス） |
+| Option | Description |
+|--------|-------------|
+| `from` | Source file (relative path from repository root) |
+| `to` | Destination file (relative path from worktree) |
 
-**複数ファイルをコピーする場合:**
+**Copying multiple files:**
 
 ```toml
 [[copy]]
@@ -186,14 +186,14 @@ to = ".npmrc"
 
 #### `[hooks]`
 
-各タイミングで実行するコマンドを指定できます。
+You can specify commands to run at each timing.
 
-| 項目 | 実行タイミング |
-|------|---------------|
-| `pre_create` | worktree作成前 |
-| `post_create` | worktree作成後 |
-| `post_copy` | ファイルコピー後 |
+| Option | Execution timing |
+|--------|------------------|
+| `pre_create` | Before worktree creation |
+| `post_create` | After worktree creation |
+| `post_copy` | After file copying |
 
-## ライセンス
+## License
 
 MIT
