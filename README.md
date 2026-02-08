@@ -12,6 +12,7 @@ Key features:
 - Hook functionality (pre_create, post_create, post_copy)
 - Automatic file copying
 - Configuration file initialization (local/global)
+- Automatic cleanup of empty directories after worktree removal
 
 ## Installation
 
@@ -78,6 +79,8 @@ Displays a list of worktrees in the current repository.
 ```bash
 wtx remove [worktree ...]
 ```
+
+After removing a worktree, empty directories are automatically cleaned up (including empty parent directories up to the worktrees root).
 
 **Options:**
 
