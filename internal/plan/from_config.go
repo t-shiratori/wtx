@@ -24,7 +24,7 @@ func NewAddPlanFromConfig(
 
 	// --- copy ---
 	for _, c := range cfg.Copy {
-		// 表示用なので from -> to を 1 行にまとめる
+		// Combine from -> to into a single line for display purposes
 		plan.CopyFiles = append(
 			plan.CopyFiles,
 			c.From+" -> "+c.To,

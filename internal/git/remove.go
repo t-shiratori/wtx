@@ -19,8 +19,7 @@ func (e *CommandError) Error() string {
 	return e.Err.Error()
 }
 
-// RemoveWorktree
-// 指定されたパスの worktree を削除する。force が true の場合は強制削除を行う
+// RemoveWorktree removes the worktree at the specified path. If force is true, it performs a force removal
 func RemoveWorktree(path string, force bool) error {
 	args := []string{"worktree", "remove"}
 
@@ -45,8 +44,7 @@ func RemoveWorktree(path string, force bool) error {
 	return nil
 }
 
-// DeleteBranch
-// 指定されたブランチを削除する。force が true の場合は -D フラグで強制削除を行う
+// DeleteBranch deletes the specified branch. If force is true, it uses -D flag for force deletion
 func DeleteBranch(branch string, force bool) error {
 	flag := "-d"
 

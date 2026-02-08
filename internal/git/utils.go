@@ -6,8 +6,7 @@ import (
 	"strings"
 )
 
-// RepoRoot
-// リポジトリのルートディレクトリまでのパスを返す
+// RepoRoot returns the path to the repository root directory
 func RepoRoot() (string, error) {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 
@@ -19,8 +18,7 @@ func RepoRoot() (string, error) {
 	return strings.TrimSpace(string(out)), nil
 }
 
-// BranchFromWorktree
-// 指定された worktree パスに対応するブランチ名を返す
+// BranchFromWorktree returns the branch name corresponding to the specified worktree path
 func BranchFromWorktree(path string) (string, error) {
 
 	cmd := exec.Command("git", "worktree", "list", "--porcelain")

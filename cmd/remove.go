@@ -26,7 +26,7 @@ var removeCmd = &cobra.Command{
 		cfg := appCtx.Config
 		repoRoot := appCtx.RepoRoot
 
-		// --- worktree 引数が無い場合は TUI ---
+		// --- If no worktree argument is provided, use TUI ---
 		if len(args) == 0 {
 			worktrees, err := git.ListWorktreesTui()
 			if err != nil {
@@ -51,7 +51,7 @@ var removeCmd = &cobra.Command{
 		for _, inputPath := range args {
 
 			err := func() error {
-				// --- パス解決 ---
+				// --- Path resolution ---
 				path, err := config.ResolveInputWorktreePath(repoRoot, cfg, inputPath)
 				if err != nil {
 					return err
@@ -59,7 +59,7 @@ var removeCmd = &cobra.Command{
 
 				var branch string
 
-				// --- ブランチ取得 ---
+				// --- Get branch ---
 				if removeBranch {
 					branch, err = git.BranchFromWorktree(path)
 					if err != nil {
@@ -67,7 +67,7 @@ var removeCmd = &cobra.Command{
 					}
 				}
 
-				// --- dryRun 用のプラン作成 ---
+				// --- Create plan for dryRun ---
 				plan := plan.RemovePlan{
 					WorktreePath: path,
 					Branch:       branch,
@@ -80,13 +80,13 @@ var removeCmd = &cobra.Command{
 					return nil
 				}
 
-				// --- worktree 削除 ---
+				// --- Remove worktree ---
 				if err := git.RemoveWorktree(path, force); err != nil {
 					return err
 				}
 				ui.Success(cmd.OutOrStdout(), "Removed worktree '%s'", path)
 
-				// --- ブランチ削除 ---
+				// --- Delete branch ---
 				if removeBranch && branch != "" {
 					if err := git.DeleteBranch(branch, force); err != nil {
 						return err
@@ -98,13 +98,13 @@ var removeCmd = &cobra.Command{
 			}()
 
 			if err != nil {
-				// git の stderr も含めてそのまま表示
+				// Display git stderr as is
 				ui.Error(cmd.ErrOrStderr(), "%v", err)
 				failed++
 			}
 		}
 
-		// --- まとめて警告 ---
+		// --- Summary warning ---
 		if failed > 0 {
 			ui.Warn(
 				cmd.ErrOrStderr(),

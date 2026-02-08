@@ -10,7 +10,7 @@ func loadConfigFile(path string) (*Config, error) {
 	src, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, nil // 無ければ nil
+			return nil, nil // return nil if file does not exist
 		}
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func loadConfigFile(path string) (*Config, error) {
 
 func LoadConfig(repoRoot string) (*Config, error) {
 
-	// 1. ローカルを優先
+	// 1. Local config takes priority
 	localPath := LocalConfigPath(repoRoot)
 	localCfg, err := loadConfigFile(localPath)
 	if err != nil {
@@ -34,7 +34,7 @@ func LoadConfig(repoRoot string) (*Config, error) {
 		return localCfg, nil
 	}
 
-	// 2. グローバル
+	// 2. Global config
 	globalPath, err := GlobalConfigPath()
 	if err != nil {
 		return nil, err
@@ -47,6 +47,6 @@ func LoadConfig(repoRoot string) (*Config, error) {
 		return globalCfg, nil
 	}
 
-	// 3. どちらも無い
+	// 3. Neither exists
 	return &Config{}, nil
 }

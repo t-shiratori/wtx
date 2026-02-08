@@ -5,8 +5,7 @@ import (
 	"os/exec"
 )
 
-// AddWorktree
-// git worktree add <path> <branch>
+// AddWorktree executes git worktree add <path> <branch>
 func AddWorktree(path string, branch string, createBranch bool, baseBranch string) error {
 	args := []string{"worktree", "add"}
 

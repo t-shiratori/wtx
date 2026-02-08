@@ -13,8 +13,7 @@ type Worktree struct {
 	Commit string
 }
 
-// ListWorktreesTui
-// git worktree list --porcelain を実行して worktree の一覧を取得する
+// ListWorktreesTui executes git worktree list --porcelain and returns a list of worktrees
 func ListWorktreesTui() ([]Worktree, error) {
 	cmd := exec.Command("git", "worktree", "list", "--porcelain")
 	out, err := cmd.Output()
@@ -25,8 +24,7 @@ func ListWorktreesTui() ([]Worktree, error) {
 	return parsePorcelain(out)
 }
 
-// parsePorcelain
-// git worktree list --porcelain の出力をパースする
+// parsePorcelain parses the output of git worktree list --porcelain
 func parsePorcelain(data []byte) ([]Worktree, error) {
 	var result []Worktree
 	var current *Worktree

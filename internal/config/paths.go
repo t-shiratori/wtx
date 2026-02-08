@@ -14,26 +14,22 @@ const (
 	DefaultWorktreeRoot  = ".wtx/worktrees"
 )
 
-// createWorktreesPath
-// DefaultWorktreesDir へのパスを作成する
+// createWorktreesPath creates a path to DefaultWorktreesDir
 func createWorktreesPath(repoRoot string, rootDir string) string {
 	return filepath.Join(repoRoot, rootDir, DefaultWorktreesDir)
 }
 
-// ConfigRootDir
-// wtxコンフィグディレクトリのパス
+// ConfigRootDir returns the path to the wtx config directory
 func ConfigRootDir(repoRoot string) string {
 	return filepath.Join(repoRoot, DefaultConfigRootDir)
 }
 
-// LocalConfigPath
-// wtxコンフィグファイルのパス
+// LocalConfigPath returns the path to the wtx config file
 func LocalConfigPath(repoRoot string) string {
 	return filepath.Join(ConfigRootDir(repoRoot), ConfigFileName)
 }
 
-// ResolveWorktreesDir
-// worktree ルートディレクトリ（設定込みで解決）
+// ResolveWorktreesDir returns the worktree root directory (resolved with config)
 func ResolveWorktreesDir(repoRoot string, cfg *Config) string {
 	if cfg.Worktree.RootDir != "" {
 		return createWorktreesPath(repoRoot, cfg.Worktree.RootDir)
@@ -41,8 +37,7 @@ func ResolveWorktreesDir(repoRoot string, cfg *Config) string {
 	return createWorktreesPath(repoRoot, DefaultConfigRootDir)
 }
 
-// ResolveWorktreePath
-// 個々の worktree パス
+// ResolveWorktreePath returns the path for a specific worktree
 func ResolveWorktreePath(repoRoot string, cfg *Config, branch string) string {
 	return filepath.Join(
 		ResolveWorktreesDir(repoRoot, cfg),
@@ -50,8 +45,7 @@ func ResolveWorktreePath(repoRoot string, cfg *Config, branch string) string {
 	)
 }
 
-// ResolveInputWorktreePath
-// ユーザーが指定した path を実際の worktree パスに解決する
+// ResolveInputWorktreePath resolves a user-specified path to the actual worktree path
 func ResolveInputWorktreePath(repoRoot string, cfg *Config, inputPath string) (string, error) {
 	if filepath.IsAbs(inputPath) {
 		return inputPath, nil
@@ -64,8 +58,7 @@ func ResolveInputWorktreePath(repoRoot string, cfg *Config, inputPath string) (s
 	return filepath.Abs(filepath.Join(ResolveWorktreesDir(repoRoot, cfg), inputPath))
 }
 
-// EnsureConfigRootDir
-// config root dir を作成する
+// GlobalConfigDir returns the path to the global config directory
 func GlobalConfigDir() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -74,8 +67,7 @@ func GlobalConfigDir() (string, error) {
 	return filepath.Join(home, GlobalConifgDirName, AppName), nil
 }
 
-// GlobalLocalConfigPath
-// グローバル config.toml のパス
+// GlobalConfigPath returns the path to the global config.toml
 func GlobalConfigPath() (string, error) {
 	dir, err := GlobalConfigDir()
 	if err != nil {

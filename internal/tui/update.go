@@ -29,7 +29,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case " ":
-			// ⭐ 正しいトグル
+			// Toggle selection
 			m.selected[m.cursor] = !m.selected[m.cursor]
 
 		case "enter":

@@ -26,7 +26,7 @@ var initCmd = &cobra.Command{
 func runInit() error {
 	baseDir := config.DefaultConfigRootDir
 
-	// グローバル設定の場合
+	// For global configuration
 	if initGlobal {
 		home, err := os.UserHomeDir()
 		if err != nil {
@@ -35,7 +35,7 @@ func runInit() error {
 		baseDir = filepath.Join(home, config.GlobalConifgDirName, config.AppName)
 	}
 
-	// 最終的な config.toml のパス
+	// Final config.toml path
 	configPath := filepath.Join(baseDir, config.ConfigFileName)
 
 	if _, err := os.Stat(configPath); err == nil && !initForce {

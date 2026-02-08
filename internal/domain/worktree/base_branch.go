@@ -1,6 +1,6 @@
 package worktree
 
-// ResolveBaseBranch は base branch を決定する
+// ResolveBaseBranch determines the base branch
 func ResolveBaseBranch(fromFlag string, defaultFromConfig string) string {
 	if fromFlag != "" {
 		return fromFlag

@@ -32,10 +32,10 @@ var addCmd = &cobra.Command{
 
 		branch := args[0]
 
-		// base branch 解決
+		// Resolve base branch
 		baseBranch := worktree.ResolveBaseBranch(fromBranch, cfg.Worktree.DefaultBaseBranch)
 
-		// worktree dir path
+		// Worktree directory path
 		worktreeDir := config.ResolveWorktreePath(
 			repoRoot,
 			cfg,
@@ -55,7 +55,7 @@ var addCmd = &cobra.Command{
 			return nil
 		}
 
-		// 4. pre hook
+		// 4. Pre hook
 		if err := hook.Run(cfg.Hooks.PreCreate, repoRoot); err != nil {
 			return err
 		}
@@ -67,12 +67,12 @@ var addCmd = &cobra.Command{
 
 		ui.Success(cmd.OutOrStdout(), "Added worktree '%s'", worktreeDir)
 
-		// 6. post create hook
+		// 6. Post create hook
 		if err := hook.Run(cfg.Hooks.PostCreate, worktreeDir); err != nil {
 			return err
 		}
 
-		// 7. copy files
+		// 7. Copy files
 		for _, c := range cfg.Copy {
 			if c.From == "" {
 				ui.Warn(cmd.OutOrStdout(), "Skipping empty 'from' in copy config")
@@ -89,7 +89,7 @@ var addCmd = &cobra.Command{
 			}
 		}
 
-		// 8. post copy hook
+		// 8. Post copy hook
 		if err := hook.Run(cfg.Hooks.PostCopy, worktreeDir); err != nil {
 			return err
 		}

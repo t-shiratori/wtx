@@ -7,8 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-// SelectWorktrees
-// worktree を TUI で選択し、選択された path の配列を返す
+// SelectWorktrees displays a TUI for selecting worktrees and returns the selected paths
 func SelectWorktrees(worktrees []git.Worktree) ([]string, error) {
 
 	if len(worktrees) == 0 {

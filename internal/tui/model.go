@@ -4,17 +4,15 @@ import (
 	"wtx/internal/git"
 )
 
-// Model
-// worktree 選択用 TUI の状態を管理する構造体
+// Model manages the state of the worktree selection TUI
 type Model struct {
-	worktrees []git.Worktree // 表示対象の worktree 一覧
-	cursor    int            // 現在のカーソル位置
-	selected  map[int]bool   // 選択された worktree のインデックス
-	quitting  bool           // TUI 終了フラグ
+	worktrees []git.Worktree // List of worktrees to display
+	cursor    int            // Current cursor position
+	selected  map[int]bool   // Indices of selected worktrees
+	quitting  bool           // TUI exit flag
 }
 
-// NewModel
-// 指定された worktree 一覧から新しい Model を生成する
+// NewModel creates a new Model from the given worktree list
 func NewModel(wt []git.Worktree) Model {
 	return Model{
 		worktrees: wt,
@@ -22,8 +20,7 @@ func NewModel(wt []git.Worktree) Model {
 	}
 }
 
-// SelectedPaths
-// 選択された worktree のパス一覧を返す
+// SelectedPaths returns the paths of the selected worktrees
 func (m Model) SelectedPaths() []string {
 	var paths []string
 	for i := range m.selected {
