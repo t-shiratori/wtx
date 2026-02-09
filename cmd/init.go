@@ -24,7 +24,7 @@ var initCmd = &cobra.Command{
 }
 
 func runInit() error {
-	baseDir := config.DefaultConfigRootDir
+	baseDir := config.DefaultConfigRoot
 
 	// For global configuration
 	if initGlobal {
@@ -32,7 +32,7 @@ func runInit() error {
 		if err != nil {
 			return err
 		}
-		baseDir = filepath.Join(home, config.GlobalConifgDirName, config.AppName)
+		baseDir = filepath.Join(home, config.GlobalConfigDirName, config.AppName)
 	}
 
 	// Final config.toml path
