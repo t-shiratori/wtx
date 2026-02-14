@@ -13,6 +13,18 @@ import (
 )
 
 var (
+	gitRemoveWorktree = git.RemoveWorktree
+	gitDeleteBranch   = git.DeleteBranch
+	gitBranchFromWT   = git.BranchFromWorktree
+
+	fsRemoveIfEmpty     = fs.RemoveIfEmpty
+	fsRemoveEmptyParent = fs.RemoveEmptyParents
+
+	listWorktreesTui = git.ListWorktreesTui
+	selectWorktrees  = tui.SelectWorktrees
+)
+
+var (
 	removeBranch bool
 	force        bool
 	dryRun       bool
@@ -29,12 +41,12 @@ var removeCmd = &cobra.Command{
 
 		// --- If no worktree argument is provided, use TUI ---
 		if len(args) == 0 {
-			worktrees, err := git.ListWorktreesTui()
+			worktrees, err := listWorktreesTui()
 			if err != nil {
 				return err
 			}
 
-			selected, err := tui.SelectWorktrees(worktrees)
+			selected, err := selectWorktrees(worktrees)
 			if err != nil {
 				return err
 			}
@@ -62,7 +74,7 @@ var removeCmd = &cobra.Command{
 
 				// --- Get branch ---
 				if removeBranch {
-					branch, err = git.BranchFromWorktree(path)
+					branch, err = gitBranchFromWT(path)
 					if err != nil {
 						return err
 					}
@@ -82,14 +94,14 @@ var removeCmd = &cobra.Command{
 				}
 
 				// --- Remove worktree ---
-				if err := git.RemoveWorktree(path, force); err != nil {
+				if err := gitRemoveWorktree(path, force); err != nil {
 					return err
 				}
 				ui.Success(cmd.OutOrStdout(), "Removed worktree '%s'", path)
 
 				// --- Delete branch ---
 				if removeBranch && branch != "" {
-					if err := git.DeleteBranch(branch, force); err != nil {
+					if err := gitDeleteBranch(branch, force); err != nil {
 						return err
 					}
 					ui.Success(cmd.OutOrStdout(), "Deleted branch '%s'", branch)
@@ -97,8 +109,8 @@ var removeCmd = &cobra.Command{
 
 				// --- Cleanup empty directories ---
 				worktreesRoot := config.ResolveWorktreesDir(repoRoot, cfg)
-				_ = fs.RemoveIfEmpty(path)
-				_ = fs.RemoveEmptyParents(path, worktreesRoot)
+				_ = fsRemoveIfEmpty(path)
+				_ = fsRemoveEmptyParent(path, worktreesRoot)
 
 				return nil
 			}()
