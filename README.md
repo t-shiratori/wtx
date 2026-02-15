@@ -102,8 +102,21 @@ After removing a worktree, empty directories are automatically cleaned up (inclu
 
 ```bash
 # Interactively select and delete using TUI
-wtx remove
 
+$ wtx remove            
+Select worktrees to remove
+
+  [ ] /Users/user/repo1 (main)
+  [ ] /Users/user/repo1/worktrees/feature/task-1 (feature/task-1)
+  [ ] /Users/user/repo1/worktrees/feature/task-2 (feature/task-2)
+  [x] /Users/user/repo1/worktrees/feature/task-3 (feature/task-3)
+> [x] /Users/user/repo1/worktrees/feature/task-4 (feature/task-4)
+
+↑/↓ move • space select • enter confirm • q cancel
+
+```
+
+````bash
 # Delete a specific worktree
 wtx remove feature/old-feature
 
@@ -112,7 +125,7 @@ wtx remove -b feature/old-feature
 
 # Delete multiple worktrees at once
 wtx remove feature/a feature/b feature/c
-```
+````
 
 ### Initialize configuration
 
