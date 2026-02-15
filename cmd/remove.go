@@ -1,144 +1,130 @@
 package cmd
 
 import (
+	"wtx/internal/adapter/fs"
+	"wtx/internal/adapter/git"
 	"wtx/internal/app"
 	"wtx/internal/config"
-	"wtx/internal/fs"
-	"wtx/internal/git"
+	oldgit "wtx/internal/git"
 	"wtx/internal/infra/logger"
 	"wtx/internal/plan"
 	"wtx/internal/tui"
+	"wtx/internal/usecase"
 
 	"github.com/spf13/cobra"
 )
 
+// Function variables for testing (TUI only)
 var (
-	gitRemoveWorktree = git.RemoveWorktree
-	gitDeleteBranch   = git.DeleteBranch
-	gitBranchFromWT   = git.BranchFromWorktree
-
-	fsRemoveIfEmpty     = fs.RemoveIfEmpty
-	fsRemoveEmptyParent = fs.RemoveEmptyParents
-
-	listWorktreesTui = git.ListWorktreesTui
+	listWorktreesTui = oldgit.ListWorktreesTui
 	selectWorktrees  = tui.SelectWorktrees
-)
-
-var (
-	removeBranch bool
-	force        bool
-	dryRun       bool
 )
 
 var removeCmd = &cobra.Command{
 	Use:   "remove [worktree ...]",
 	Short: "Remove git worktrees",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE:  runRemove,
+}
 
-		appCtx := cmd.Context().Value(app.Key).(*app.Context)
-		cfg := appCtx.Config
-		repoRoot := appCtx.RepoRoot
+func runRemove(cmd *cobra.Command, args []string) error {
+	appCtx := cmd.Context().Value(app.Key).(*app.Context)
+	cfg := appCtx.Config
+	repoRoot := appCtx.RepoRoot
 
-		// --- If no worktree argument is provided, use TUI ---
-		if len(args) == 0 {
-			worktrees, err := listWorktreesTui()
-			if err != nil {
-				return err
-			}
+	// Get flags
+	dryRun, _ := cmd.Flags().GetBool("dry-run")
+	removeBranch, _ := cmd.Flags().GetBool("branch")
+	force, _ := cmd.Flags().GetBool("force")
 
-			selected, err := selectWorktrees(worktrees)
-			if err != nil {
-				return err
-			}
-
-			if len(selected) == 0 {
-				logger.Warn(cmd.OutOrStdout(), "No worktrees selected")
-				return nil
-			}
-
-			args = selected
+	// If no worktree argument is provided, use TUI
+	if len(args) == 0 {
+		worktrees, err := listWorktreesTui()
+		if err != nil {
+			return err
 		}
 
-		var failed int
+		selected, err := selectWorktrees(worktrees)
+		if err != nil {
+			return err
+		}
 
+		if len(selected) == 0 {
+			logger.Warn(cmd.OutOrStdout(), "No worktrees selected")
+			return nil
+		}
+
+		args = selected
+	}
+
+	// Handle dry-run in cmd layer
+	if dryRun {
 		for _, inputPath := range args {
-
-			err := func() error {
-				// --- Path resolution ---
-				path, err := config.ResolveInputWorktreePath(repoRoot, cfg, inputPath)
-				if err != nil {
-					return err
-				}
-
-				var branch string
-
-				// --- Get branch ---
-				if removeBranch {
-					branch, err = gitBranchFromWT(path)
-					if err != nil {
-						return err
-					}
-				}
-
-				// --- Create plan for dryRun ---
-				plan := plan.RemovePlan{
-					WorktreePath: path,
-					Branch:       branch,
-					Force:        force,
-				}
-
-				// --- dry-run ---
-				if dryRun {
-					plan.Print(cmd.OutOrStdout())
-					return nil
-				}
-
-				// --- Remove worktree ---
-				if err := gitRemoveWorktree(path, force); err != nil {
-					return err
-				}
-				logger.Success(cmd.OutOrStdout(), "Removed worktree '%s'", path)
-
-				// --- Delete branch ---
-				if removeBranch && branch != "" {
-					if err := gitDeleteBranch(branch, force); err != nil {
-						return err
-					}
-					logger.Success(cmd.OutOrStdout(), "Deleted branch '%s'", branch)
-				}
-
-				// --- Cleanup empty directories ---
-				worktreesRoot := config.ResolveWorktreesDir(repoRoot, cfg)
-				_ = fsRemoveIfEmpty(path)
-				_ = fsRemoveEmptyParent(path, worktreesRoot)
-
-				return nil
-			}()
-
+			path, err := config.ResolveInputWorktreePath(repoRoot, cfg, inputPath)
 			if err != nil {
-				// Display git stderr as is
 				logger.Error(cmd.ErrOrStderr(), "%v", err)
-				failed++
+				continue
+			}
+
+			var branch string
+			if removeBranch {
+				branch, _ = oldgit.BranchFromWorktree(path)
+			}
+
+			p := plan.RemovePlan{
+				WorktreePath: path,
+				Branch:       branch,
+				Force:        force,
+			}
+			p.Print(cmd.OutOrStdout())
+		}
+		return nil
+	}
+
+	// Create dependencies
+	gitRepo := git.NewRepository()
+	fsAdapter := fs.NewFileSystem()
+
+	// Create and execute usecase
+	uc := usecase.NewRemoveWorktree(gitRepo, fsAdapter, cfg, repoRoot)
+
+	output, err := uc.Execute(usecase.RemoveWorktreeInput{
+		Paths:        args,
+		DeleteBranch: removeBranch,
+		Force:        force,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	// Display results
+	for _, result := range output.Results {
+		if result.Error != nil {
+			logger.Error(cmd.ErrOrStderr(), "%v", result.Error)
+		} else {
+			logger.Success(cmd.OutOrStdout(), "Removed worktree '%s'", result.Path)
+			if result.Branch != "" {
+				logger.Success(cmd.OutOrStdout(), "Deleted branch '%s'", result.Branch)
 			}
 		}
+	}
 
-		// --- Summary warning ---
-		if failed > 0 {
-			logger.Warn(
-				cmd.ErrOrStderr(),
-				"%d worktrees could not be removed (use --force to override)",
-				failed,
-			)
-		}
+	// Summary warning
+	if failed := output.FailedCount(); failed > 0 {
+		logger.Warn(
+			cmd.ErrOrStderr(),
+			"%d worktrees could not be removed (use --force to override)",
+			failed,
+		)
+	}
 
-		return nil
-	},
+	return nil
 }
 
 func init() {
-	removeCmd.Flags().BoolVarP(&removeBranch, "branch", "b", false, "also delete branch")
-	removeCmd.Flags().BoolVarP(&force, "force", "f", false, "force remove worktree and branch")
-	removeCmd.Flags().BoolVar(&dryRun, "dry-run", false, "show what would be done")
+	removeCmd.Flags().BoolP("branch", "b", false, "also delete branch")
+	removeCmd.Flags().BoolP("force", "f", false, "force remove worktree and branch")
+	removeCmd.Flags().Bool("dry-run", false, "show what would be done")
 
 	rootCmd.AddCommand(removeCmd)
 }

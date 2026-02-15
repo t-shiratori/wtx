@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
+	"strings"
 	"testing"
 
 	"wtx/internal/app"
@@ -27,45 +29,42 @@ func testAppContext(t *testing.T) context.Context {
 }
 
 func TestAddCommand_DryRun(t *testing.T) {
-	// フラグの後始末（超重要）
-	t.Cleanup(func() {
-		addDryRun = false
-		createBranch = false
-		fromBranch = ""
-	})
-
-	// Arrange
 	ctx := testAppContext(t)
 
-	cmd := addCmd
-	cmd.SetContext(ctx)
-	cmd.SetArgs([]string{"feature/test"})
-	addDryRun = true
+	var out bytes.Buffer
+	rootCmd.SetOut(&out)
+	rootCmd.SetErr(&out)
+	rootCmd.SetArgs([]string{"add", "--dry-run", "feature/test"})
 
-	// Act
-	err := cmd.Execute()
+	err := rootCmd.ExecuteContext(ctx)
 
-	// Assert
 	if err != nil {
 		t.Fatalf("add command failed: %v", err)
 	}
+
+	// Verify dry-run output contains expected information
+	output := out.String()
+	if !strings.Contains(output, "Dry run") {
+		t.Errorf("expected dry-run output, got: %s", output)
+	}
 }
 
-func TestAddCommand_FromBranchOverridesConfig(t *testing.T) {
-	t.Cleanup(func() {
-		addDryRun = false
-		fromBranch = ""
-	})
-
+func TestAddCommand_DryRunWithFromBranch(t *testing.T) {
 	ctx := testAppContext(t)
 
-	cmd := addCmd
-	cmd.SetContext(ctx)
-	cmd.SetArgs([]string{"feature/test"})
-	addDryRun = true
-	fromBranch = "develop"
+	var out bytes.Buffer
+	rootCmd.SetOut(&out)
+	rootCmd.SetErr(&out)
+	rootCmd.SetArgs([]string{"add", "--dry-run", "--from", "develop", "feature/test"})
 
-	if err := cmd.Execute(); err != nil {
+	err := rootCmd.ExecuteContext(ctx)
+
+	if err != nil {
 		t.Fatalf("add command failed: %v", err)
+	}
+
+	output := out.String()
+	if !strings.Contains(output, "develop") {
+		t.Errorf("expected 'develop' in output, got: %s", output)
 	}
 }

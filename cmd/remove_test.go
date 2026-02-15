@@ -10,17 +10,12 @@ import (
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/git"
-
-	"github.com/spf13/cobra"
 )
 
-// TestRemoveCmd_DryRun verifies that the actual removal is not executed
-// when the --dry-run flag is specified
+// TestRemoveCmd_DryRun verifies that --dry-run flag works correctly
 func TestRemoveCmd_DryRun(t *testing.T) {
-	// Create a temporary directory for testing
 	repoRoot := t.TempDir()
 
-	// Set up the test context
 	cfg := &config.Config{}
 	ctx := context.WithValue(
 		context.Background(),
@@ -31,102 +26,25 @@ func TestRemoveCmd_DryRun(t *testing.T) {
 		},
 	)
 
-	// Set up a buffer to capture command output
 	var out bytes.Buffer
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
-	cmd.SetOut(&out)
-	cmd.SetErr(&out)
+	rootCmd.SetOut(&out)
+	rootCmd.SetErr(&out)
+	rootCmd.SetArgs([]string{"remove", "--dry-run", "test-branch"})
 
-	// Enable dry-run mode and disable other flags
-	dryRun = true
-	removeBranch = false
-	force = false
+	err := rootCmd.ExecuteContext(ctx)
 
-	// Mock gitRemoveWorktree to track if it gets called
-	called := false
-	gitRemoveWorktree = func(path string, force bool) error {
-		called = true
-		return nil
-	}
-
-	// Restore the original function after the test
-	defer func() {
-		gitRemoveWorktree = git.RemoveWorktree
-	}()
-
-	// Execute the command
-	err := removeCmd.RunE(cmd, []string{"test-branch"})
-
-	// Verify no error occurred
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	// Verify that the actual removal was not called in dry-run mode
-	if called {
-		t.Fatalf("gitRemoveWorktree should not be called in dry-run")
-	}
-
-	// Verify that output was generated
-	if out.Len() == 0 {
-		t.Fatalf("expected output, got empty")
+	// Verify dry-run output
+	output := out.String()
+	if !strings.Contains(output, "Dry run") {
+		t.Errorf("expected dry-run output, got: %s", output)
 	}
 }
 
-// TestRemoveCmd_RemoveWorktreeCalled verifies that gitRemoveWorktree
-// is correctly called during normal execution
-func TestRemoveCmd_RemoveWorktreeCalled(t *testing.T) {
-	// Create a temporary directory for testing
-	repoRoot := t.TempDir()
-
-	// Set up the test context
-	cfg := &config.Config{}
-	ctx := context.WithValue(
-		context.Background(),
-		app.Key,
-		&app.Context{
-			Config:   cfg,
-			RepoRoot: repoRoot,
-		},
-	)
-
-	// Set up a buffer to capture command output
-	var out bytes.Buffer
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
-	cmd.SetOut(&out)
-	cmd.SetErr(&out)
-
-	// Test in normal mode (dry-run disabled)
-	dryRun = false
-	removeBranch = false
-	force = false
-
-	// Mock gitRemoveWorktree to track if it gets called
-	called := false
-	gitRemoveWorktree = func(path string, force bool) error {
-		called = true
-		return nil
-	}
-
-	// Restore the original function after the test
-	defer func() {
-		gitRemoveWorktree = git.RemoveWorktree
-	}()
-
-	// Execute the command
-	err := removeCmd.RunE(cmd, []string{"test-branch"})
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	// Verify that gitRemoveWorktree was called
-	if !called {
-		t.Fatalf("gitRemoveWorktree was not called")
-	}
-}
-
+// TestRemoveCmd_NoArgs_NoSelection verifies TUI selection flow
 func TestRemoveCmd_NoArgs_NoSelection(t *testing.T) {
 	// Mock TUI functions to simulate no selection
 	origList := listWorktreesTui

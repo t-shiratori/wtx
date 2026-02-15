@@ -1,46 +1,42 @@
 package cmd
 
 import (
-	"path/filepath"
+	"wtx/internal/adapter/fs"
+	"wtx/internal/adapter/git"
+	"wtx/internal/adapter/hook"
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/domain/worktree"
-	"wtx/internal/fs"
-	"wtx/internal/git"
-	"wtx/internal/hook"
 	"wtx/internal/infra/logger"
 	"wtx/internal/plan"
+	"wtx/internal/usecase"
 
 	"github.com/spf13/cobra"
-)
-
-var (
-	addDryRun    bool
-	createBranch bool
-	fromBranch   string
 )
 
 var addCmd = &cobra.Command{
 	Use:   "add <branch>",
 	Short: "add git worktree",
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE:  runAdd,
+}
 
-		appCtx := cmd.Context().Value(app.Key).(*app.Context)
-		cfg := appCtx.Config
-		repoRoot := appCtx.RepoRoot
+func runAdd(cmd *cobra.Command, args []string) error {
+	appCtx := cmd.Context().Value(app.Key).(*app.Context)
+	cfg := appCtx.Config
+	repoRoot := appCtx.RepoRoot
 
-		branch := args[0]
+	// Get flags
+	dryRun, _ := cmd.Flags().GetBool("dry-run")
+	createBranch, _ := cmd.Flags().GetBool("create-branch")
+	fromBranch, _ := cmd.Flags().GetString("from")
 
-		// Resolve base branch
+	branch := args[0]
+
+	// Handle dry-run in cmd layer
+	if dryRun {
 		baseBranch := worktree.ResolveBaseBranch(fromBranch, cfg.Worktree.DefaultBaseBranch)
-
-		// Worktree directory path
-		worktreeDir := config.ResolveWorktreePath(
-			repoRoot,
-			cfg,
-			branch,
-		)
+		worktreeDir := config.ResolveWorktreePath(repoRoot, cfg, branch)
 
 		addPlan := plan.NewAddPlanFromConfig(
 			cfg,
@@ -49,58 +45,41 @@ var addCmd = &cobra.Command{
 			createBranch,
 			baseBranch,
 		)
-
-		if addDryRun {
-			addPlan.Print(cmd.OutOrStdout())
-			return nil
-		}
-
-		// 4. Pre hook
-		if err := hook.Run(cfg.Hooks.PreCreate, repoRoot); err != nil {
-			return err
-		}
-
-		// 5. git worktree add
-		if err := git.AddWorktree(worktreeDir, branch, createBranch, baseBranch); err != nil {
-			return err
-		}
-
-		logger.Success(cmd.OutOrStdout(), "Added worktree '%s'", worktreeDir)
-
-		// 6. Post create hook
-		if err := hook.Run(cfg.Hooks.PostCreate, worktreeDir); err != nil {
-			return err
-		}
-
-		// 7. Copy files
-		for _, c := range cfg.Copy {
-			if c.From == "" {
-				logger.Warn(cmd.OutOrStdout(), "Skipping empty 'from' in copy config")
-				continue
-			}
-			if c.To == "" {
-				logger.Warn(cmd.OutOrStdout(), "Skipping empty 'to' in copy config")
-				continue
-			}
-			src := filepath.Join(repoRoot, c.From)
-			dst := filepath.Join(worktreeDir, c.To)
-			if err := fs.CopyFile(src, dst); err != nil {
-				return err
-			}
-		}
-
-		// 8. Post copy hook
-		if err := hook.Run(cfg.Hooks.PostCopy, worktreeDir); err != nil {
-			return err
-		}
-
+		addPlan.Print(cmd.OutOrStdout())
 		return nil
-	},
+	}
+
+	// Create dependencies
+	gitRepo := git.NewRepository()
+	fsAdapter := fs.NewFileSystem()
+	hookRunner := hook.NewRunner()
+
+	// Create and execute usecase
+	uc := usecase.NewAddWorktree(
+		gitRepo,
+		fsAdapter,
+		hookRunner,
+		cfg,
+		repoRoot,
+	)
+
+	output, err := uc.Execute(usecase.AddWorktreeInput{
+		Branch:       branch,
+		CreateBranch: createBranch,
+		FromBranch:   fromBranch,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	logger.Success(cmd.OutOrStdout(), "Added worktree '%s'", output.WorktreePath)
+	return nil
 }
 
 func init() {
-	addCmd.Flags().BoolVarP(&createBranch, "create-branch", "b", false, "create branch if it does not exist")
-	addCmd.Flags().StringVar(&fromBranch, "from", "", "base branch or commit")
-	addCmd.Flags().BoolVar(&addDryRun, "dry-run", false, "show what would be done")
+	addCmd.Flags().BoolP("create-branch", "b", false, "create branch if it does not exist")
+	addCmd.Flags().String("from", "", "base branch or commit")
+	addCmd.Flags().Bool("dry-run", false, "show what would be done")
 	rootCmd.AddCommand(addCmd)
 }
