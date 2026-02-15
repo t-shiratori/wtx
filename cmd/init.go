@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"wtx/internal/config"
-	"wtx/internal/ui"
+	"wtx/internal/infra/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -39,7 +39,7 @@ func runInit() error {
 	configPath := filepath.Join(baseDir, config.ConfigFileName)
 
 	if _, err := os.Stat(configPath); err == nil && !initForce {
-		ui.Error(os.Stdout, "%s already exists (use --force to overwrite)", configPath)
+		logger.Error(os.Stdout, "%s already exists (use --force to overwrite)", configPath)
 		return err
 	}
 
@@ -47,7 +47,7 @@ func runInit() error {
 		return err
 	}
 
-	ui.Success(os.Stdout, "Initialized config at %s", configPath)
+	logger.Success(os.Stdout, "Initialized config at %s", configPath)
 
 	return os.WriteFile(configPath, []byte(config.DefaultConfigTOML), 0644)
 }

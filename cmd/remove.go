@@ -5,9 +5,9 @@ import (
 	"wtx/internal/config"
 	"wtx/internal/fs"
 	"wtx/internal/git"
+	"wtx/internal/infra/logger"
 	"wtx/internal/plan"
 	"wtx/internal/tui"
-	"wtx/internal/ui"
 
 	"github.com/spf13/cobra"
 )
@@ -52,7 +52,7 @@ var removeCmd = &cobra.Command{
 			}
 
 			if len(selected) == 0 {
-				ui.Warn(cmd.OutOrStdout(), "No worktrees selected")
+				logger.Warn(cmd.OutOrStdout(), "No worktrees selected")
 				return nil
 			}
 
@@ -97,14 +97,14 @@ var removeCmd = &cobra.Command{
 				if err := gitRemoveWorktree(path, force); err != nil {
 					return err
 				}
-				ui.Success(cmd.OutOrStdout(), "Removed worktree '%s'", path)
+				logger.Success(cmd.OutOrStdout(), "Removed worktree '%s'", path)
 
 				// --- Delete branch ---
 				if removeBranch && branch != "" {
 					if err := gitDeleteBranch(branch, force); err != nil {
 						return err
 					}
-					ui.Success(cmd.OutOrStdout(), "Deleted branch '%s'", branch)
+					logger.Success(cmd.OutOrStdout(), "Deleted branch '%s'", branch)
 				}
 
 				// --- Cleanup empty directories ---
@@ -117,14 +117,14 @@ var removeCmd = &cobra.Command{
 
 			if err != nil {
 				// Display git stderr as is
-				ui.Error(cmd.ErrOrStderr(), "%v", err)
+				logger.Error(cmd.ErrOrStderr(), "%v", err)
 				failed++
 			}
 		}
 
 		// --- Summary warning ---
 		if failed > 0 {
-			ui.Warn(
+			logger.Warn(
 				cmd.ErrOrStderr(),
 				"%d worktrees could not be removed (use --force to override)",
 				failed,

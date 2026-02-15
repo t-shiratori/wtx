@@ -8,8 +8,8 @@ import (
 	"wtx/internal/fs"
 	"wtx/internal/git"
 	"wtx/internal/hook"
+	"wtx/internal/infra/logger"
 	"wtx/internal/plan"
-	"wtx/internal/ui"
 
 	"github.com/spf13/cobra"
 )
@@ -65,7 +65,7 @@ var addCmd = &cobra.Command{
 			return err
 		}
 
-		ui.Success(cmd.OutOrStdout(), "Added worktree '%s'", worktreeDir)
+		logger.Success(cmd.OutOrStdout(), "Added worktree '%s'", worktreeDir)
 
 		// 6. Post create hook
 		if err := hook.Run(cfg.Hooks.PostCreate, worktreeDir); err != nil {
@@ -75,11 +75,11 @@ var addCmd = &cobra.Command{
 		// 7. Copy files
 		for _, c := range cfg.Copy {
 			if c.From == "" {
-				ui.Warn(cmd.OutOrStdout(), "Skipping empty 'from' in copy config")
+				logger.Warn(cmd.OutOrStdout(), "Skipping empty 'from' in copy config")
 				continue
 			}
 			if c.To == "" {
-				ui.Warn(cmd.OutOrStdout(), "Skipping empty 'to' in copy config")
+				logger.Warn(cmd.OutOrStdout(), "Skipping empty 'to' in copy config")
 				continue
 			}
 			src := filepath.Join(repoRoot, c.From)

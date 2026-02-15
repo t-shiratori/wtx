@@ -2,7 +2,7 @@ package plan
 
 import (
 	"io"
-	"wtx/internal/ui"
+	"wtx/internal/infra/logger"
 )
 
 type RemovePlan struct {
@@ -12,15 +12,15 @@ type RemovePlan struct {
 }
 
 func (p *RemovePlan) Print(w io.Writer) {
-	ui.Info(w, "Dry run: remove worktree")
+	logger.Info(w, "Dry run: remove worktree")
 
-	ui.Info(w, "  - worktree: %s", p.WorktreePath)
+	logger.Info(w, "  - worktree: %s", p.WorktreePath)
 
 	if p.Branch != "" {
-		ui.Info(w, "  - branch: %s", p.Branch)
+		logger.Info(w, "  - branch: %s", p.Branch)
 	}
 
 	if p.Force {
-		ui.Info(w, "  - force: true")
+		logger.Info(w, "  - force: true")
 	}
 }
