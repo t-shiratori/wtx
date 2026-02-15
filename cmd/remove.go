@@ -6,7 +6,7 @@ import (
 	"wtx/internal/app"
 	"wtx/internal/config"
 	oldgit "wtx/internal/git"
-	"wtx/internal/infra/logger"
+	"wtx/internal/logger"
 	"wtx/internal/plan"
 	"wtx/internal/tui"
 	"wtx/internal/usecase"

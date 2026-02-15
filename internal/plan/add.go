@@ -2,7 +2,7 @@ package plan
 
 import (
 	"io"
-	"wtx/internal/infra/logger"
+	"wtx/internal/logger"
 )
 
 type AddPlan struct {
