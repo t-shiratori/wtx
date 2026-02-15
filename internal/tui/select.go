@@ -2,13 +2,14 @@ package tui
 
 import (
 	"errors"
-	"wtx/internal/git"
+
+	"wtx/internal/domain/worktree"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 // SelectWorktrees displays a TUI for selecting worktrees and returns the selected paths
-func SelectWorktrees(worktrees []git.Worktree) ([]string, error) {
+func SelectWorktrees(worktrees []worktree.Worktree) ([]string, error) {
 
 	if len(worktrees) == 0 {
 		return nil, errors.New("no worktrees found")

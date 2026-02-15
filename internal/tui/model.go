@@ -1,19 +1,19 @@
 package tui
 
 import (
-	"wtx/internal/git"
+	"wtx/internal/domain/worktree"
 )
 
 // Model manages the state of the worktree selection TUI
 type Model struct {
-	worktrees []git.Worktree // List of worktrees to display
-	cursor    int            // Current cursor position
-	selected  map[int]bool   // Indices of selected worktrees
-	quitting  bool           // TUI exit flag
+	worktrees []worktree.Worktree // List of worktrees to display
+	cursor    int                 // Current cursor position
+	selected  map[int]bool        // Indices of selected worktrees
+	quitting  bool                // TUI exit flag
 }
 
 // NewModel creates a new Model from the given worktree list
-func NewModel(wt []git.Worktree) Model {
+func NewModel(wt []worktree.Worktree) Model {
 	return Model{
 		worktrees: wt,
 		selected:  make(map[int]bool),

@@ -5,6 +5,7 @@ import (
 	"wtx/internal/adapter/git"
 	"wtx/internal/app"
 	"wtx/internal/config"
+	"wtx/internal/domain/worktree"
 	oldgit "wtx/internal/git"
 	"wtx/internal/logger"
 	"wtx/internal/plan"
@@ -16,8 +17,8 @@ import (
 
 // Function variables for testing (TUI only)
 var (
-	listWorktreesTui = oldgit.ListWorktreesTui
-	selectWorktrees  = tui.SelectWorktrees
+	listWorktreesTui func() ([]worktree.Worktree, error)     = oldgit.ListWorktreesTui
+	selectWorktrees  func([]worktree.Worktree) ([]string, error) = tui.SelectWorktrees
 )
 
 var removeCmd = &cobra.Command{

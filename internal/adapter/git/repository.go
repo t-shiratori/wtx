@@ -30,20 +30,7 @@ func (r *Repository) DeleteBranch(branch string, force bool) error {
 
 // ListWorktrees returns all worktrees
 func (r *Repository) ListWorktrees() ([]worktree.Worktree, error) {
-	wts, err := oldgit.ListWorktreesTui()
-	if err != nil {
-		return nil, err
-	}
-
-	result := make([]worktree.Worktree, len(wts))
-	for i, wt := range wts {
-		result[i] = worktree.Worktree{
-			Path:   wt.Path,
-			Branch: wt.Branch,
-			Commit: wt.Commit,
-		}
-	}
-	return result, nil
+	return oldgit.ListWorktreesTui()
 }
 
 // BranchFromWorktree returns the branch name for a worktree path

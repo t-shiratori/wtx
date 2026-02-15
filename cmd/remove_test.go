@@ -9,7 +9,7 @@ import (
 
 	"wtx/internal/app"
 	"wtx/internal/config"
-	"wtx/internal/git"
+	"wtx/internal/domain/worktree"
 )
 
 // TestRemoveCmd_DryRun verifies that --dry-run flag works correctly
@@ -54,14 +54,14 @@ func TestRemoveCmd_NoArgs_NoSelection(t *testing.T) {
 		selectWorktrees = origSelect
 	}()
 
-	listWorktreesTui = func() ([]git.Worktree, error) {
-		return []git.Worktree{
+	listWorktreesTui = func() ([]worktree.Worktree, error) {
+		return []worktree.Worktree{
 			{Path: "wt1"},
 			{Path: "wt2"},
 		}, nil
 	}
 
-	selectWorktrees = func(_ []git.Worktree) ([]string, error) {
+	selectWorktrees = func(_ []worktree.Worktree) ([]string, error) {
 		return []string{}, nil
 	}
 

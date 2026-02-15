@@ -1,20 +1,15 @@
 package git
 
 import (
-	"bytes"
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"wtx/internal/domain/worktree"
 )
 
-type Worktree struct {
-	Path   string
-	Branch string
-	Commit string
-}
-
 // ListWorktreesTui executes git worktree list --porcelain and returns a list of worktrees
-func ListWorktreesTui() ([]Worktree, error) {
+func ListWorktreesTui() ([]worktree.Worktree, error) {
 	cmd := exec.Command("git", "worktree", "list", "--porcelain")
 	out, err := cmd.Output()
 	if err != nil {
@@ -25,17 +20,16 @@ func ListWorktreesTui() ([]Worktree, error) {
 }
 
 // parsePorcelain parses the output of git worktree list --porcelain
-func parsePorcelain(data []byte) ([]Worktree, error) {
-	var result []Worktree
-	var current *Worktree
+func parsePorcelain(data []byte) ([]worktree.Worktree, error) {
+	var result []worktree.Worktree
+	var current *worktree.Worktree
 
-	lines := bytes.Split(data, []byte("\n"))
-	for _, line := range lines {
+	for line := range strings.SplitSeq(string(data), "\n") {
 		if len(line) == 0 {
 			continue
 		}
 
-		fields := strings.SplitN(string(line), " ", 2)
+		fields := strings.SplitN(line, " ", 2)
 		key := fields[0]
 
 		switch key {
@@ -43,15 +37,18 @@ func parsePorcelain(data []byte) ([]Worktree, error) {
 			if current != nil {
 				result = append(result, *current)
 			}
-			current = &Worktree{
+			if len(fields) < 2 {
+				continue
+			}
+			current = &worktree.Worktree{
 				Path: fields[1],
 			}
 		case "branch":
-			if current != nil {
+			if current != nil && len(fields) >= 2 {
 				current.Branch = strings.TrimPrefix(fields[1], "refs/heads/")
 			}
 		case "HEAD":
-			if current != nil {
+			if current != nil && len(fields) >= 2 {
 				current.Commit = fields[1]
 			}
 		}
