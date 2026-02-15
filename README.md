@@ -26,6 +26,14 @@ brew install t-shiratori/tap/wtx
 
 Download `wtx_darwin_amd64` (Intel Mac) or `wtx_darwin_arm64` (Apple Silicon) from [Releases](https://github.com/t-shiratori/wtx/releases).
 
+### Go install (local)
+
+```bash
+git clone https://github.com/t-shiratori/wtx.git
+cd wtx
+go install .
+```
+
 ### Build from source
 
 ```bash
