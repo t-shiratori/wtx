@@ -1,9 +1,9 @@
 package config
 
 type Config struct {
-	Worktree WorktreeConfig `toml:"worktree"`
-	Copy     []CopyConfig   `toml:"copy"`
-	Hooks    HookConfig     `toml:"hooks"`
+	Worktree WorktreeConfig    `toml:"worktree"`
+	Copy     CopyConfigSection `toml:"copy"`
+	Hooks    HookConfig        `toml:"hooks"`
 }
 
 type WorktreeConfig struct {
@@ -11,7 +11,12 @@ type WorktreeConfig struct {
 	DefaultBaseBranch string `toml:"default_base_branch"`
 }
 
-type CopyConfig struct {
+type CopyConfigSection struct {
+	Patterns []string   `toml:"patterns"`
+	Files    []CopyFile `toml:"files"`
+}
+
+type CopyFile struct {
 	From string `toml:"from"`
 	To   string `toml:"to"`
 }

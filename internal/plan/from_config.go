@@ -23,11 +23,17 @@ func NewAddPlanFromConfig(
 	plan.PostCopyHook = cfg.Hooks.PostCopy
 
 	// --- copy ---
-	for _, c := range cfg.Copy {
+	// Patterns
+	for _, pattern := range cfg.Copy.Patterns {
+		plan.CopyFiles = append(plan.CopyFiles, pattern)
+	}
+
+	// Explicit files (from -> to)
+	for _, file := range cfg.Copy.Files {
 		// Combine from -> to into a single line for display purposes
 		plan.CopyFiles = append(
 			plan.CopyFiles,
-			c.From+" -> "+c.To,
+			file.From+" -> "+file.To,
 		)
 	}
 

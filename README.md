@@ -173,7 +173,11 @@ You can customize settings by creating `.wtx/config.toml` in your project root.
 root_dir = ""                    # Worktree directory (defaults to .wtx/worktrees if empty)
 default_base_branch = "main"     # Default base branch
 
-[[copy]]                         # File copy settings (multiple entries allowed)
+[copy]
+patterns = ["*.env", "config/*.yaml"]  # Glob patterns for file copying
+
+# For renaming files (optional)
+[[copy.files]]
 from = ".env.example"            # Source file (relative to repository root)
 to = ".env"                      # Destination file (relative to worktree)
 
@@ -192,29 +196,64 @@ post_copy = ["echo copied"]      # Run after file copying
 | `root_dir` | Directory where worktrees are created | `.wtx/worktrees` |
 | `default_base_branch` | Base branch used when `--from` is omitted | `main` |
 
-#### `[[copy]]`
+#### `[copy]`
 
-Automatically copies files when creating a worktree. Multiple entries can be specified.
+Automatically copies files when creating a worktree.
+
+##### Glob Patterns: `patterns`
+
+Use glob patterns to specify multiple files at once:
+
+```toml
+[copy]
+patterns = [
+    "*.env",
+    "config/*.yaml",
+    ".npmrc.example",
+    "secrets/*.json"
+]
+```
+
+Files matching the patterns are copied from the repository root to the same relative path in the worktree.
+
+**Supported patterns:**
+- `*` - Matches any string (excluding directory separators)
+- `?` - Matches any single character
+- `[abc]` - Matches any character in the set
+
+**Note:** Recursive glob patterns (`**`) are not supported in the initial version.
+
+##### Explicit Files: `[[copy.files]]` (For renaming)
+
+Use this format when you need to rename files or copy to a different path:
+
+```toml
+[[copy.files]]
+from = ".env.example"
+to = ".env"
+
+[[copy.files]]
+from = "config/dev.yaml"
+to = "config/local.yaml"
+```
 
 | Option | Description |
 |--------|-------------|
 | `from` | Source file (relative path from repository root) |
 | `to` | Destination file (relative path from worktree) |
 
-**Copying multiple files:**
+##### Using Both Formats
+
+You can use both patterns and explicit files together:
 
 ```toml
-[[copy]]
+[copy]
+patterns = ["*.env", "config/*.yaml"]
+
+# For renaming specific files
+[[copy.files]]
 from = ".env.example"
 to = ".env"
-
-[[copy]]
-from = "config/local.example.json"
-to = "config/local.json"
-
-[[copy]]
-from = ".npmrc.example"
-to = ".npmrc"
 ```
 
 #### `[hooks]`
