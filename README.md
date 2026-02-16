@@ -13,6 +13,7 @@ Key features:
 - Automatic file copying
 - Configuration file initialization (local/global)
 - Automatic cleanup of empty directories after worktree removal
+- Version information display
 
 ## Installation
 
@@ -43,6 +44,14 @@ go build -o wtx .
 ```
 
 ## Usage
+
+### Check version
+
+```bash
+wtx --version
+```
+
+Displays the current version of wtx.
 
 ### Add a worktree
 
