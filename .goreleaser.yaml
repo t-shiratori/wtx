@@ -43,6 +43,7 @@ homebrew_casks:
     repository:
       owner: t-shiratori
       name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
 
     url:
       verified: github.com/t-shiratori/wtx
