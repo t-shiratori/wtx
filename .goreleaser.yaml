@@ -20,8 +20,8 @@ builds:
 
 archives:
   - id: wtx
-    formats: binary
-    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
 
 checksum:
   name_template: "checksums.txt"
@@ -55,4 +55,6 @@ homebrew_casks:
             system_command "/usr/bin/xattr",
               args: ["-dr", "com.apple.quarantine", "#{staged_path}/wtx"]
           end
+    
+    
 
