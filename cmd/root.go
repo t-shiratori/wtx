@@ -6,14 +6,16 @@ import (
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/git"
+	"wtx/internal/version"
 
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "wtx",
-	Short: "A simple git worktree helper",
-	Long:  "wtx is a small CLI tool to manage git worktrees easily.",
+	Use:     "wtx",
+	Short:   "A simple git worktree helper",
+	Long:    "wtx is a small CLI tool to manage git worktrees easily.",
+	Version: version.Version,
 }
 
 func init() {
