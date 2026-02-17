@@ -8,7 +8,7 @@ import (
 	"wtx/internal/domain/worktree"
 	"wtx/internal/logger"
 	"wtx/internal/usecase/plan"
-	"wtx/internal/tui"
+	"wtx/internal/adapter/tui"
 	"wtx/internal/usecase"
 
 	"github.com/spf13/cobra"
