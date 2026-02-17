@@ -6,7 +6,6 @@ import (
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/domain/worktree"
-	oldgit "wtx/internal/git"
 	"wtx/internal/logger"
 	"wtx/internal/plan"
 	"wtx/internal/tui"
@@ -17,9 +16,14 @@ import (
 
 // Function variables for testing (TUI only)
 var (
-	listWorktreesTui func() ([]worktree.Worktree, error)     = oldgit.ListWorktreesTui
+	listWorktreesTui func() ([]worktree.Worktree, error)
 	selectWorktrees  func([]worktree.Worktree) ([]string, error) = tui.SelectWorktrees
 )
+
+func init() {
+	repo := git.NewRepository()
+	listWorktreesTui = repo.ListWorktrees
+}
 
 var removeCmd = &cobra.Command{
 	Use:   "remove [worktree ...]",
@@ -59,6 +63,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 
 	// Handle dry-run in cmd layer
 	if dryRun {
+		gitRepo := git.NewRepository()
 		for _, inputPath := range args {
 			path, err := config.ResolveInputWorktreePath(repoRoot, cfg, inputPath)
 			if err != nil {
@@ -68,7 +73,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 
 			var branch string
 			if removeBranch {
-				branch, _ = oldgit.BranchFromWorktree(path)
+				branch, _ = gitRepo.BranchFromWorktree(path)
 			}
 
 			p := plan.RemovePlan{

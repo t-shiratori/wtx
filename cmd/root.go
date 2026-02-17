@@ -3,9 +3,9 @@ package cmd
 import (
 	"context"
 	"os"
+	"wtx/internal/adapter/git"
 	"wtx/internal/app"
 	"wtx/internal/config"
-	"wtx/internal/git"
 	"wtx/internal/version"
 
 	"github.com/spf13/cobra"
@@ -20,7 +20,8 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		repoRoot, err := git.RepoRoot()
+		repo := git.NewRepository()
+		repoRoot, err := repo.RepoRoot()
 		if err != nil {
 			return err
 		}
