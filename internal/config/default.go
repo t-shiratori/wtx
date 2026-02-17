@@ -5,9 +5,13 @@ const DefaultConfigTOML = `
 root_dir = ""
 default_base_branch = "main"
 
-[[copy]]
-from = ""
-to = ""
+[copy]
+patterns = []
+
+# For renaming files (optional)
+# [[copy.files]]
+# from = ".env.example"
+# to = ".env"
 
 [hooks]
 pre_create = []
