@@ -7,7 +7,7 @@ import (
 	"wtx/internal/config"
 	"wtx/internal/domain/worktree"
 	"wtx/internal/logger"
-	"wtx/internal/plan"
+	"wtx/internal/usecase/plan"
 	"wtx/internal/tui"
 	"wtx/internal/usecase"
 
