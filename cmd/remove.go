@@ -6,7 +6,8 @@ import (
 	"wtx/internal/app"
 	"wtx/internal/config"
 	"wtx/internal/domain/worktree"
-	"wtx/internal/logger"
+	"wtx/internal/shared/logger"
+	"wtx/internal/shared/spinner"
 	"wtx/internal/usecase/plan"
 	"wtx/internal/adapter/tui"
 	"wtx/internal/usecase"
@@ -93,6 +94,9 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	// Create and execute usecase
 	uc := usecase.NewRemoveWorktree(gitRepo, fsAdapter, cfg, repoRoot)
 
+	sp := spinner.New(cmd.OutOrStdout(), "Removing worktrees...")
+	sp.Start()
+
 	output, err := uc.Execute(usecase.RemoveWorktreeInput{
 		Paths:        args,
 		DeleteBranch: removeBranch,
@@ -100,8 +104,10 @@ func runRemove(cmd *cobra.Command, args []string) error {
 	})
 
 	if err != nil {
+		sp.StopWithError()
 		return err
 	}
+	sp.Stop()
 
 	// Display results
 	for _, result := range output.Results {

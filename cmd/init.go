@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"wtx/internal/config"
-	"wtx/internal/logger"
+	"wtx/internal/shared/logger"
 
 	"github.com/spf13/cobra"
 )

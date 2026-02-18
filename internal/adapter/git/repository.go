@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
@@ -45,10 +44,18 @@ func (r *Repository) AddWorktree(opts worktree.AddOptions) error {
 	}
 
 	cmd := exec.Command("git", args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
 
-	return cmd.Run()
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		return &CommandError{
+			Err:     err,
+			Message: stderr.String(),
+		}
+	}
+
+	return nil
 }
 
 // RemoveWorktree removes an existing worktree
@@ -85,9 +92,18 @@ func (r *Repository) DeleteBranch(branch string, force bool) error {
 	}
 
 	cmd := exec.Command("git", "branch", flag, branch)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		return &CommandError{
+			Err:     err,
+			Message: stderr.String(),
+		}
+	}
+
+	return nil
 }
 
 // ListWorktrees returns all worktrees
