@@ -107,7 +107,7 @@ func runRemove(cmd *cobra.Command, args []string) error {
 		sp.StopWithError()
 		return err
 	}
-	sp.Stop()
+	sp.StopWithSuccess()
 
 	// Display results
 	for _, result := range output.Results {
