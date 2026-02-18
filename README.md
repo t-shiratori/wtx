@@ -29,6 +29,8 @@ Download `wtx_darwin_amd64` (Intel Mac) or `wtx_darwin_arm64` (Apple Silicon) fr
 
 ### Go install (local)
 
+Requires Go 1.25.6 or later.
+
 ```bash
 git clone https://github.com/t-shiratori/wtx.git
 cd wtx
@@ -36,6 +38,8 @@ go install .
 ```
 
 ### Build from source
+
+Requires Go 1.25.6 or later.
 
 ```bash
 git clone https://github.com/t-shiratori/wtx.git
@@ -64,7 +68,7 @@ wtx add <branch>
 | Option | Description |
 |--------|-------------|
 | `-b, --create-branch` | Create a new branch if it doesn't exist |
-| `--from <branch>` | Specify the base branch |
+| `--from <branch>` | Specify the base branch or commit |
 | `--dry-run` | Show what would be done without executing |
 
 **Examples:**
@@ -89,7 +93,14 @@ wtx add -b feature/new-feature --dry-run
 wtx list
 ```
 
-Displays a list of worktrees in the current repository.
+Displays a list of worktrees in the current repository in tab-separated format (`path`, `branch`, `commit`).
+
+**Example output:**
+
+```
+/Users/user/repo1                                    main              abc1234
+/Users/user/repo1/worktrees/feature/task-1           feature/task-1    def5678
+```
 
 ### Remove a worktree
 
@@ -167,6 +178,12 @@ wtx init --global
 ## Configuration
 
 You can customize settings by creating `.wtx/config.toml` in your project root.
+
+Configuration is loaded in the following priority order:
+
+1. **Local config**: `.wtx/config.toml` (project root)
+2. **Global config**: `~/.config/wtx/config.toml`
+3. **Default values** (if neither exists)
 
 ```toml
 [worktree]
