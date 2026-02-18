@@ -93,7 +93,7 @@ wtx add -b feature/new-feature --dry-run
 wtx list
 ```
 
-Displays a list of worktrees in the current repository in tab-separated format (`path`, `branch`, `commit`).
+Displays a list of worktrees in the current repository with aligned columns (`path`, `branch`, `commit`).
 
 **Example output:**
 
