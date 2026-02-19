@@ -179,11 +179,15 @@ wtx init --global
 
 You can customize settings by creating `.wtx/config.toml` in your project root.
 
-Configuration is loaded in the following priority order:
+Both local and global configs are loaded and **merged**:
 
-1. **Local config**: `.wtx/config.toml` (project root)
-2. **Global config**: `~/.config/wtx/config.toml`
-3. **Default values** (if neither exists)
+- **Local config**: `.wtx/config.toml` (project root)
+- **Global config**: `~/.config/wtx/config.toml`
+
+Merge behavior:
+- String fields (`root_dir`, `default_base_branch`): local value takes priority over global
+- Slice fields (`patterns`, `copy.files`, hooks): global and local entries are combined (duplicates removed)
+- If neither config exists, default values are used
 
 ```toml
 [worktree]
@@ -238,7 +242,7 @@ Files matching the patterns are copied from the repository root to the same rela
 - `?` - Matches any single character
 - `[abc]` - Matches any character in the set
 
-**Note:** Recursive glob patterns (`**`) are not supported in the initial version.
+**Note:** Recursive glob patterns (`**`) are not supported.
 
 ##### Explicit Files: `[[copy.files]]` (For renaming)
 
