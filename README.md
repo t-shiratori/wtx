@@ -186,7 +186,8 @@ Both local and global configs are loaded and **merged**:
 
 Merge behavior:
 - String fields (`root_dir`, `default_base_branch`): local value takes priority over global
-- Slice fields (`patterns`, `copy.files`, hooks): global and local entries are combined (duplicates removed)
+- Slice fields (`patterns`, hooks): global and local entries are combined (duplicates removed)
+- `copy.files`: global and local entries are merged; if both have the same `from` path, the local entry takes priority
 - If neither config exists, default values are used
 
 ```toml
@@ -214,7 +215,7 @@ post_copy = ["echo copied"]      # Run after file copying
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `root_dir` | Directory where worktrees are created | `.wtx/worktrees` |
+| `root_dir` | Root directory for wtx. Relative path: worktrees are created at `<root_dir>/worktrees` under the repo. Absolute path: used directly as the worktrees directory. | `.wtx/worktrees` (when empty) |
 | `default_base_branch` | Base branch used when `--from` is omitted | `main` |
 
 #### `[copy]`
