@@ -33,6 +33,20 @@ func TestResolveWorktreesDir_CustomRoot(t *testing.T) {
 	}
 }
 
+func TestResolveWorktreesDir_AbsoluteRoot(t *testing.T) {
+	repoRoot := "/repo"
+
+	cfg := &Config{}
+	cfg.Worktree.RootDir = "/abs/path"
+
+	got := ResolveWorktreesDir(repoRoot, cfg)
+	want := "/abs/path"
+
+	if got != want {
+		t.Fatalf("ResolveWorktreesDir() = %q, want %q", got, want)
+	}
+}
+
 func TestResolveWorktreePath(t *testing.T) {
 	repoRoot := "/repo"
 	branch := "feature-1"

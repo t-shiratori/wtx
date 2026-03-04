@@ -15,6 +15,9 @@ func worktreesRoot(repoRoot string, cfg *Config) string {
 	if cfg.Worktree.RootDir != "" {
 		root = cfg.Worktree.RootDir
 	}
+	if filepath.IsAbs(root) {
+		return root
+	}
 	return filepath.Join(repoRoot, root, DefaultWorktreesDir)
 }
 
