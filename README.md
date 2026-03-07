@@ -141,10 +141,16 @@ Select worktrees to remove
 wtx remove feature/old-feature
 
 # Also delete the branch
-wtx remove -b feature/old-feature
+wtx remove feature/old-feature -b
+
+# Force delete
+wtx remove feature/old-feature -f
 
 # Delete multiple worktrees at once
 wtx remove feature/a feature/b feature/c
+
+# Preview what would be done (dry-run)
+wtx remove feature/old-feature --dry-run
 ````
 
 ### Initialize configuration
