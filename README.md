@@ -81,10 +81,10 @@ wtx add feature/new-feature
 wtx add -b feature/new-feature
 
 # Create a new branch based on main
-wtx add -b feature/new-feature --from main
+wtx add -b --from main feature/new-feature
 
 # Preview what would be done (dry-run)
-wtx add -b feature/new-feature --dry-run
+wtx add -b --dry-run feature/new-feature
 ```
 
 ### List worktrees
@@ -141,16 +141,16 @@ Select worktrees to remove
 wtx remove feature/old-feature
 
 # Also delete the branch
-wtx remove feature/old-feature -b
+wtx remove -b feature/old-feature
 
 # Force delete
-wtx remove feature/old-feature -f
+wtx remove -f feature/old-feature
 
 # Delete multiple worktrees at once
 wtx remove feature/a feature/b feature/c
 
 # Preview what would be done (dry-run)
-wtx remove feature/old-feature --dry-run
+wtx remove --dry-run feature/old-feature
 ````
 
 ### Initialize configuration
