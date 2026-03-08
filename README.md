@@ -8,6 +8,7 @@ wtx is a lightweight CLI tool for efficiently managing Git's worktree feature. I
 
 Key features:
 - Create, delete, and list worktrees
+- Remove all worktrees at once
 - Interactive worktree selection via TUI (Terminal UI)
 - Hook functionality (pre_create, post_create, post_copy)
 - Automatic file copying
@@ -152,6 +153,39 @@ wtx remove feature/a feature/b feature/c
 # Preview what would be done (dry-run)
 wtx remove feature/old-feature --dry-run
 ````
+
+### Remove all worktrees at once
+
+```bash
+wtx purge
+```
+
+Removes all worktrees except the main one. Displays the list of targets and prompts for confirmation before proceeding.
+
+**Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-b, --branch` | Also delete the branch along with each worktree |
+| `-f, --force` | Force deletion |
+| `-y, --yes` | Skip confirmation prompt |
+| `--dry-run` | Show what would be done without executing |
+
+**Examples:**
+
+```bash
+# Remove all worktrees with confirmation prompt
+wtx purge
+
+# Skip confirmation
+wtx purge -y
+
+# Also delete branches
+wtx purge -y -b
+
+# Preview what would be done (dry-run)
+wtx purge --dry-run
+```
 
 ### Initialize configuration
 
