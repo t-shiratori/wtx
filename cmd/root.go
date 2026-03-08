@@ -6,7 +6,7 @@ import (
 	"wtx/internal/adapter/git"
 	"wtx/internal/app"
 	"wtx/internal/config"
-	"wtx/internal/version"
+	"wtx/internal/shared/version"
 
 	"github.com/spf13/cobra"
 )

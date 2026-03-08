@@ -39,7 +39,7 @@ internal/
   usecase/    → Business logic (AddWorktree, RemoveWorktree, ListWorktrees)
     plan/     → Dry-run plan building (mirrors usecase logic without side effects)
   config/     → Config struct, loading (TOML), path resolution
-  shared/     → Logger
+  shared/     → Cross-cutting concerns (logger, spinner, prompt, version)
 ```
 
 ### Request flow

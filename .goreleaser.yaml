@@ -13,7 +13,7 @@ builds:
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -X wtx/internal/version.Version={{ .Version }}
+      - -X wtx/internal/shared/version.Version={{ .Version }}
     goos:
       - darwin
     goarch:
