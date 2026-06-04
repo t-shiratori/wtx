@@ -1,12 +1,10 @@
 # wtx
 
-A CLI tool for easily managing Git worktrees.
+wtx is a developer-focused CLI for managing Git worktrees efficiently.
 
-## Overview
+It helps you work on multiple branches in parallel by providing a streamlined workflow for creating, listing, removing, and automating worktrees through interactive terminal UI, file-copy automation, and customizable hooks.
 
-wtx is a lightweight CLI tool for efficiently managing Git's worktree feature. It makes it easy to create, delete, and list worktrees when working on multiple branches in parallel.
-
-Key features:
+### Key features:
 - Create, delete, and list worktrees
 - Remove all worktrees at once
 - Interactive worktree selection via TUI (Terminal UI)
