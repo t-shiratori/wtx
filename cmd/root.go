@@ -18,25 +18,33 @@ var rootCmd = &cobra.Command{
 	Version: version.Version,
 }
 
+// init registers shared pre-run logic that runs before every subcommand (add, remove, list, etc.).
 func init() {
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		// Resolve the repository root; fails early if not inside a Git repo.
 		repo := git.NewRepository()
 		repoRoot, err := repo.RepoRoot()
 		if err != nil {
 			return err
 		}
 
+		// Load and merge local (.wtx/config.toml) and global (~/.config/wtx/config.toml) configs.
+		// Local values take priority over global ones.
 		cfg, err := config.LoadConfig(repoRoot)
 		if err != nil {
 			return err
 		}
 
+		// Determine the worktree placement directory from the config and repo root.
 		worktreeDir := config.ResolveWorktreesDir(repoRoot, cfg)
 
+		// Create the worktree directory if it does not exist yet.
 		if err := config.EnsureConfigRootDir(worktreeDir); err != nil {
 			return err
 		}
 
+		// Store app.Context (config + repo root) in Cobra's context so each subcommand
+		// can retrieve it via cmd.Context().Value(app.Key).
 		ctx := context.WithValue(
 			cmd.Context(),
 			app.Key,
